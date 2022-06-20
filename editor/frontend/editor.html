@@ -1,0 +1,72 @@
+<!DOCTYPE html>
+<html>
+    <head>
+        <meta charset="utf-8">
+        <title>sACN2Video Editor</title>
+
+        <style>
+            :root{
+                background-color: black;
+            }
+        </style>
+        <link rel="stylesheet" href="./css/style.css">
+        <script src="./js/views.js"></script>
+        <script src="./js/editor.js"></script>
+        <script src="./js/dom.lib.js"></script>
+    </head>
+    <body>
+        <header id="header">
+            <h1>sACN2Video2 Editor</h1>
+        </header>
+        <main>
+            <!-- <h2>Assets</h2>
+            <div class="list-item">
+                <input placeholder="MIME">
+            </div>
+            <div class="list-item">
+                <input placeholder="Label">
+            </div>
+            <button>
+                OK
+            </button>
+            <div class="pgb">
+                <div class="pgb-inner"></div>
+            </div> -->
+            <!-- <div>add Asset File</div> -->
+            <div class="view active" data-id="loading">
+                loading...
+            </div>
+            <div class="view" data-id="home">
+                <button class="button" id="add-asset-button" style="text-align: left;">add Asset File</button>
+                <!-- <button class="button" id="edit-props-button" style="text-align: left;">configure elements</button> -->
+            </div>
+            <div class="view" data-id="add-asset--file">
+                
+            </div>
+            <div class="view" data-id="add-asset">
+                <div id="asset-file-path"></div>
+                <input class="button" placeholder="id" id="aas-id" tabindex="1">
+                <input class="button" placeholder="MIME _" id="aas-mime" tabindex="2">
+                <input class="button" placeholder="Label _" id="aas-label" tabindex="3">
+                <div class="flex-row">
+                    <button class="button center" id="aas-cancel" tabindex="5">Abbrechen</button>
+                    <button class="button center" id="aas-ok" tabindex="4">OK</button>
+                </div>
+            </div>
+            <div class="view" data-id="add-asset--log">
+                <div class="aas-log"></div>
+                <button class="button center" id="aas-log-ok">Schließen</button>
+            </div>
+            <div class="view" data-id="edit-props-ellist">
+                <header>Elemente</header>
+                <button id="add-el-button" class="button">+</button>
+                <div class="list" id="ep-ellist"></div>
+            </div>
+            <div class="view" data-id="edit-props-elprops">
+                <header>loading ...</header>
+                <button id="add-el-button" class="button">+</button>
+                <div class="list" id="ep-ellist"></div>
+            </div>
+        </main>
+    </body>
+</html>

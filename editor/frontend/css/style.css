@@ -1,0 +1,134 @@
+body {
+  color: #fe5000;
+  margin: 0;
+  color-scheme: dark;
+  font-family: sans-serif;
+}
+
+* {
+  -webkit-box-sizing: border-box;
+          box-sizing: border-box;
+}
+
+#header {
+  background-color: #fe5000;
+  color: #111;
+  position: fixed;
+  width: 100vw;
+  height: 3rem;
+  display: -webkit-box;
+  display: -ms-flexbox;
+  display: flex;
+  -webkit-box-align: center;
+      -ms-flex-align: center;
+          align-items: center;
+  -webkit-box-orient: horizontal;
+  -webkit-box-direction: normal;
+      -ms-flex-direction: row;
+          flex-direction: row;
+  display: none;
+}
+
+main {
+  position: fixed;
+  width: 100vw;
+  height: calc(100vh - 0rem);
+  bottom: 0;
+}
+
+.pgb {
+  height: 1rem;
+  width: 100%;
+  background-color: #111;
+}
+
+.pgb .pgb-inner {
+  width: 50%;
+  height: 100%;
+  background-color: green;
+}
+
+.view {
+  position: absolute;
+  top: 0;
+  left: 0;
+  width: 100%;
+  height: 100%;
+  padding: 1rem;
+}
+
+.view:not(.active) {
+  display: none;
+}
+
+.button,
+.list-item {
+  display: block;
+  font-size: 1rem;
+  border-radius: .3rem;
+  background-color: #111;
+  padding: .7rem;
+  width: 100%;
+  -webkit-user-select: none;
+     -moz-user-select: none;
+      -ms-user-select: none;
+          user-select: none;
+  color: #fe5000;
+  border-color: #fe5000;
+  accent-color: currentcolor;
+  outline: none !important;
+  border: .15rem solid;
+  margin-bottom: .3rem;
+}
+
+.button:not(:focus-within),
+.list-item:not(:focus-within) {
+  border-color: transparent !important;
+}
+
+.button::-webkit-input-placeholder,
+.list-item::-webkit-input-placeholder {
+  color: #fe5000;
+}
+
+.button:-ms-input-placeholder,
+.list-item:-ms-input-placeholder {
+  color: #fe5000;
+}
+
+.button::-ms-input-placeholder,
+.list-item::-ms-input-placeholder {
+  color: #fe5000;
+}
+
+.button::placeholder,
+.list-item::placeholder {
+  color: #fe5000;
+}
+
+.button:hover, .button:focus,
+.list-item:hover,
+.list-item:focus {
+  background-color: #222;
+}
+
+.button.list-item,
+.list-item.list-item {
+  text-align: left;
+}
+
+.flex-row {
+  display: -webkit-box;
+  display: -ms-flexbox;
+  display: flex;
+  -webkit-box-orient: horizontal;
+  -webkit-box-direction: normal;
+      -ms-flex-direction: row;
+          flex-direction: row;
+  gap: .3rem;
+}
+
+.center {
+  text-align: center;
+}
+/*# sourceMappingURL=style.css.map */

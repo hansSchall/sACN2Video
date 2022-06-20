@@ -1,0 +1,94 @@
+<!DOCTYPE html>
+<html lang="de">
+    <head>
+        <meta charset="utf-8">
+        <base href="/client/">
+        <title>sACN2Video WebGL</title>
+        <meta name="viewport" content="width=device-width, height=device-height, initial-scale=1">
+        <script>
+            const firstScriptTimestamp = Date.now();
+            const flags = {
+                transform: true,
+                clockPrescaler: 2,
+                overlayVerbose: 0
+            }
+        </script>
+        <style>
+            body{
+                background-color: black;
+                --c: #fe5000;
+                margin: 0;
+                font-family: sans-serif;
+                color: var(--c);
+            }
+            #c{
+                position: fixed;
+                top: 0;
+                left: 0;
+                height: 100vh;
+                width: 100vw;
+            }
+            #info{
+                position: fixed;
+                pointer-events: none;
+                bottom: 0;
+                left: 0;
+                width: 100vw;
+                background-color: #000c;
+                display: flex;
+                align-items: center;
+                justify-content: space-between;
+                padding: 2px 6px;
+                box-sizing: border-box;
+            }
+            .state-default{
+                color: green;
+            }
+            .state-error{
+                color: red;
+            }
+            #load-info{
+                position: fixed;
+                width: 100vw;
+                max-height: 100vh;
+                overflow: auto;
+                background-color: #000c;
+            }
+            #files .ok{
+                color: green;
+            }
+            #files .failed{
+                color: red;
+            }
+            #shutter{
+                display: block;
+                position: fixed;
+                top: 0;
+                left: 0;
+                width: 100vw;
+                height: 100vh;
+                object-fit: fill;
+            }
+            .hidden{
+                display: none !important;
+            }
+        </style>
+    </head>
+    <body>
+        <canvas id="c"></canvas>
+        <div id="info">
+            <div id="fps">0fps</div>
+            <div id="status-el"></div>
+        </div>
+        <div id="load-info">
+            <div id="files">
+                loading ...
+            </div>
+        </div>
+    </body>
+    <script src="./js/assets.js"></script>
+    <script src="./js/socket.js"></script>
+    <script src="./js/gl.js"></script>
+    <script src="./js/output.js"></script>
+    <script src="./js/dom.lib.js"></script>
+</html>
