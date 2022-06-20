@@ -1,9 +1,0 @@
-{
-    "compilerOptions": {
-        "target": "es2021",
-        "module": "es6",
-        "outDir": "./js",
-        "sourceMap": true,
-        "allowUmdGlobalAccess": true
-    }
-}
