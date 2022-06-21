@@ -59,7 +59,7 @@ async function main() {
         res.sendFile(path.join(__dirname, "../client/client.html"));
     });
     process.stdout.write("reading file ...");
-    (0, db_js_1.init_db)().then(() => {
+    (0, db_js_1.init_db)().then(async () => {
         console.log(" finished");
         (0, assets_js_1.staticAssets)(app);
         (0, sacn_js_1.initSacn)();
@@ -69,6 +69,10 @@ async function main() {
                 res.end(config);
             });
         });
+        if (callOptions?.editor) {
+            const mod = await Promise.resolve().then(() => __importStar(require("./editor-backend/editor-backend.js")));
+            mod.initEditor(db_js_1.db);
+        }
         if (callOptions?.randomPort) {
             const server = app.listen(() => {
                 //@ts-ignore

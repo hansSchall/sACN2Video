@@ -100,7 +100,8 @@ async function main() {
                 editor.loadFile(path.join(__dirname, "../editor/frontend/editor.html"));
         },
         file,
-        randomPort: true
+        randomPort: true,
+        editor: !!editor,
     };
     (0, server_js_1.main)();
 }

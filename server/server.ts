@@ -5,7 +5,7 @@ if (!global?.callOptions) global.callOptions = {} as any;
 const port = callOptions?.port ?? parseInt(process.argv[3]);
 export let dbFile = "";
 import express from "express";
-import { init_db } from "./src/db.js";
+import { db, init_db } from "./src/db.js";
 import { staticAssets } from "./src/assets.js";
 import { initSacn } from "./src/sacn.js";
 import { initSocket } from "./src/socket.js";
@@ -37,7 +37,7 @@ export async function main() {
 
     process.stdout.write("reading file ...");
 
-    init_db().then(() => {
+    init_db().then(async () => {
         console.log(" finished");
         staticAssets(app);
         initSacn();
@@ -47,6 +47,10 @@ export async function main() {
                 res.end(config);
             });
         })
+        if (callOptions?.editor) {
+            const mod = await import("./editor-backend/editor-backend.js")
+            mod.initEditor(db);
+        }
         if (callOptions?.randomPort) {
             const server = app.listen(() => {
                 //@ts-ignore
