@@ -1,0 +1,102 @@
+$c: #fe5000;
+
+@mixin center {
+    display: flex;
+    align-items: center;
+    justify-content: center;
+}
+
+@mixin square($s) {
+    height: $s;
+    width: $s;
+    border-radius: .3rem;
+}
+
+main {
+    display: flex;
+    flex-direction: row;
+    height: 100vh;
+    width: 100vw;
+    color-scheme: dark;
+    overflow: hidden;
+
+    article {
+        flex: 1 1 1px;
+        display: flex;
+        flex-direction: column;
+        max-height: 100vh;
+
+        >.content {
+            overflow: auto;
+            padding: .5rem;
+            flex: 1 1 auto;
+        }
+
+        .item {
+            border-radius: .3rem;
+            padding: .4rem .5rem;
+
+            &:hover {
+                background-color: #111;
+            }
+        }
+    }
+}
+
+aside {
+    width: 3rem;
+    display: flex;
+    align-items: stretch;
+    background-color: #111;
+    // position: fixed;
+    height: calc(100vh);
+    flex-direction: column;
+
+    div {
+        width: 3rem;
+        height: 3rem;
+        @include center();
+        font-size: 1.5rem;
+
+        &:hover {
+            background-color: #181818;
+        }
+
+        &.active {
+            background-color: #222;
+        }
+    }
+}
+
+
+
+.article-heading {
+    font-size: 2rem;
+    padding: 1rem;
+    width: 100%;
+    // background-color: #f00;
+    padding-bottom: 0;
+}
+
+.article-toolbar {
+    padding: .5rem;
+    display: flex;
+    flex-direction: row;
+
+    .tool {
+        @include square(2.5rem);
+        font-size: 1.3rem;
+        @include center();
+
+        &:hover {
+            background-color: #111;
+        }
+
+        border-radius: .3rem;
+    }
+}
+
+#preview {
+    background-color: #111;
+
+}

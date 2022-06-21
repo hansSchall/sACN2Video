@@ -1,0 +1,127 @@
+main {
+  display: -webkit-box;
+  display: -ms-flexbox;
+  display: flex;
+  -webkit-box-orient: horizontal;
+  -webkit-box-direction: normal;
+      -ms-flex-direction: row;
+          flex-direction: row;
+  height: 100vh;
+  width: 100vw;
+  color-scheme: dark;
+  overflow: hidden;
+}
+
+main article {
+  -webkit-box-flex: 1;
+      -ms-flex: 1 1 1px;
+          flex: 1 1 1px;
+  display: -webkit-box;
+  display: -ms-flexbox;
+  display: flex;
+  -webkit-box-orient: vertical;
+  -webkit-box-direction: normal;
+      -ms-flex-direction: column;
+          flex-direction: column;
+  max-height: 100vh;
+}
+
+main article > .content {
+  overflow: auto;
+  padding: .5rem;
+  -webkit-box-flex: 1;
+      -ms-flex: 1 1 auto;
+          flex: 1 1 auto;
+}
+
+main article .item {
+  border-radius: .3rem;
+  padding: .4rem .5rem;
+}
+
+main article .item:hover {
+  background-color: #111;
+}
+
+aside {
+  width: 3rem;
+  display: -webkit-box;
+  display: -ms-flexbox;
+  display: flex;
+  -webkit-box-align: stretch;
+      -ms-flex-align: stretch;
+          align-items: stretch;
+  background-color: #111;
+  height: calc(100vh);
+  -webkit-box-orient: vertical;
+  -webkit-box-direction: normal;
+      -ms-flex-direction: column;
+          flex-direction: column;
+}
+
+aside div {
+  width: 3rem;
+  height: 3rem;
+  display: -webkit-box;
+  display: -ms-flexbox;
+  display: flex;
+  -webkit-box-align: center;
+      -ms-flex-align: center;
+          align-items: center;
+  -webkit-box-pack: center;
+      -ms-flex-pack: center;
+          justify-content: center;
+  font-size: 1.5rem;
+}
+
+aside div:hover {
+  background-color: #181818;
+}
+
+aside div.active {
+  background-color: #222;
+}
+
+.article-heading {
+  font-size: 2rem;
+  padding: 1rem;
+  width: 100%;
+  padding-bottom: 0;
+}
+
+.article-toolbar {
+  padding: .5rem;
+  display: -webkit-box;
+  display: -ms-flexbox;
+  display: flex;
+  -webkit-box-orient: horizontal;
+  -webkit-box-direction: normal;
+      -ms-flex-direction: row;
+          flex-direction: row;
+}
+
+.article-toolbar .tool {
+  height: 2.5rem;
+  width: 2.5rem;
+  border-radius: .3rem;
+  font-size: 1.3rem;
+  display: -webkit-box;
+  display: -ms-flexbox;
+  display: flex;
+  -webkit-box-align: center;
+      -ms-flex-align: center;
+          align-items: center;
+  -webkit-box-pack: center;
+      -ms-flex-pack: center;
+          justify-content: center;
+  border-radius: .3rem;
+}
+
+.article-toolbar .tool:hover {
+  background-color: #111;
+}
+
+#preview {
+  background-color: #111;
+}
+/*# sourceMappingURL=style.css.map */
