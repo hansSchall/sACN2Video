@@ -64,5 +64,8 @@ electron_1.contextBridge.exposeInMainWorld("preload", {
             onMsg(ev.data);
         };
         electron_1.ipcRenderer.postMessage('logger', null, [port1]);
+    },
+    isSplitscreenEnabled() {
+        return electron_1.ipcRenderer.invoke("is-splitscreen-enabled");
     }
 });

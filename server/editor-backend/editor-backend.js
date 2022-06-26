@@ -94,5 +94,6 @@ function initEditor(db) {
         });
         port.start();
     });
+    electronLink_js_1.electron.ipcMain.handle("is-splitscreen-enabled", () => run_js_1.enableEditorSplitscreen);
 }
 exports.initEditor = initEditor;

@@ -34,7 +34,8 @@ declare const preload: {
         list: () => Promise<string[]>,
         fileDialog: () => Promise<string>,
         add: (id: string, file: string, label: string, mime: string) => Promise<void>
-    }
+    },
+    isSplitscreenEnabled: () => Promise<boolean>;
 }
 
 declare type VoidFn = () => void;

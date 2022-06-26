@@ -2,7 +2,7 @@ import { BrowserWindow, dialog } from "electron";
 import EventEmitter from "events";
 import { Database } from "sqlite";
 import { electron } from "../../runInNativeWin/electronLink.js";
-import { serverPort } from "../../runInNativeWin/run.js";
+import { enableEditorSplitscreen, serverPort } from "../../runInNativeWin/run.js";
 import { addAsset } from "./asset.js";
 
 interface DBElsFormat {
@@ -113,4 +113,5 @@ export function initEditor(db: Database) {
         port.start();
     });
 
+    electron.ipcMain.handle("is-splitscreen-enabled", () => enableEditorSplitscreen);
 }

@@ -75,5 +75,8 @@ contextBridge.exposeInMainWorld("preload", {
             onMsg(ev.data);
         };
         ipcRenderer.postMessage('logger', null, [port1])
+    },
+    isSplitscreenEnabled() {
+        return ipcRenderer.invoke("is-splitscreen-enabled");
     }
 })

@@ -15,6 +15,8 @@ enum FileMode {
 
 export let serverPort = 0;
 
+export let enableEditorSplitscreen = false;
+
 async function main() {
     const startEditor = process.argv[3];
     let file = process.argv[2];
@@ -69,6 +71,9 @@ async function main() {
                 preload: path.join(__dirname, "./preload/preload.js")
             }
         })
+    }
+    if (mode.response === FileMode.EditSplit) {
+        enableEditorSplitscreen = true;
     }
     global.callOptions = {
         delayInit: true,

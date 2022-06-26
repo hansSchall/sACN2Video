@@ -23,7 +23,7 @@ var __importStar = (this && this.__importStar) || function (mod) {
     return result;
 };
 Object.defineProperty(exports, "__esModule", { value: true });
-exports.serverPort = void 0;
+exports.enableEditorSplitscreen = exports.serverPort = void 0;
 global.callOptions = {
     delayInit: true,
 };
@@ -38,6 +38,7 @@ var FileMode;
     FileMode[FileMode["Cancel"] = 3] = "Cancel";
 })(FileMode || (FileMode = {}));
 exports.serverPort = 0;
+exports.enableEditorSplitscreen = false;
 async function main() {
     const startEditor = process.argv[3];
     let file = process.argv[2];
@@ -93,6 +94,9 @@ async function main() {
                 preload: path.join(__dirname, "./preload/preload.js")
             }
         });
+    }
+    if (mode.response === FileMode.EditSplit) {
+        exports.enableEditorSplitscreen = true;
     }
     global.callOptions = {
         delayInit: true,

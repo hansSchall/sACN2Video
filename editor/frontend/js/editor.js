@@ -7,12 +7,13 @@ window.addEventListener("load", () => {
     root.render(React.createElement(App, null));
 });
 function App() {
-    const [rootView, setRootView] = React.useState("assets");
+    const [rootView, setRootView] = React.useState("props");
     const [splitscreen, setSplitscreen] = React.useState(false);
     const [previewUrl, setPreviewUrl] = React.useState("");
     React.useEffect(() => {
         preload.getPreviewUrl().then(setPreviewUrl);
-    });
+        preload.isSplitscreenEnabled().then(setSplitscreen);
+    }, []);
     function reloadPreview() {
         setPreviewUrl("");
         preload.getPreviewUrl().then(setPreviewUrl);
