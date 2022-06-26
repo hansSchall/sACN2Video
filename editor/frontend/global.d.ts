@@ -1,23 +1,42 @@
-declare const $: <T = HTMLElement>(query: string) => T;
-declare const $$: <T extends Node = HTMLElement>(query: string) => NodeListOf<T>;
-declare const $el: <T = HTMLElement>(classname?: string | string[], tagname?: string | null | undefined | 0 | false, html?: string, fn?: (el: T) => void) => T;
-interface HTMLElement extends Node {
-    $: <T = HTMLElement>(query: string) => T;
-    $$: <T extends Node = HTMLElement>(query: string) => NodeListOf<T>;
-    goUpInTree: (query: string) => HTMLElement | null;
-    setClass: (classname: string, active: boolean) => void;
+interface DBElsFormat {
+    id: string
+    type: string
+    enabled: string
+    zi: string
 }
-interface Array<T> {
-    readonly lastElement: T
+interface DBPropsFormat {
+    el: string,
+    prop: string,
+    valueType: string,
+    value: string,
 }
-interface NodeListOf<TNode extends Node> {
-    [Symbol.iterator](): IterableIterator<TNode>
-}
-declare type MayAsync<T = void> = T | Promise<T>;
 
 declare const preload: {
-    dialogAssetFile(): Promise<string>
-    aas(file: string, id: string, mime: string, label: string): Promise<void>
-    aasLog(cb: (data: string) => void): void;
-    ellist(): Promise<any[]>;
+    list: {
+        els: () => Promise<DBElsFormat[]>,
+        props: (el: string, prop?: string) => Promise<DBPropsFormat[]>,
+    },
+    put: {
+        el: (el: DBElsFormat) => Promise<void>
+        prop: (prop: DBPropsFormat) => Promise<void>
+    },
+    add: {
+        el: (id: string, type: string) => Promise<void>,
+        prop: (el: string, prop: string) => Promise<void>
+    },
+    delete: {
+        el: (id: string) => Promise<boolean>,
+        prop: (el: string, prop: string) => Promise<boolean>
+    },
+    getPreviewUrl: () => Promise<string>,
+    getPreviewMode: () => Promise<boolean>,
+    assets: {
+        list: () => Promise<string[]>,
+        fileDialog: () => Promise<string>,
+        add: (id: string, file: string, label: string, mime: string) => Promise<void>,
+        delete: (id: string) => Promise<boolean>
+    },
+    isSplitscreenEnabled: () => Promise<boolean>;
 }
+
+declare type VoidFn = () => void;

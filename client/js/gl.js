@@ -180,7 +180,7 @@ function render() {
         gl.drawArrays(gl.TRIANGLES, 0, 6);
     }
     if (flags.transform) {
-        gl.uniform1i(uniforms.get("u_shutterMode"), hasShutter ? 1 : 0);
+        gl.uniform1i(uniforms.get("u_shutterMode"), useShutter ? 1 : 0);
         gl.bufferData(gl.ARRAY_BUFFER, new Float32Array([0, 0, 1, 0, 1, 1, 0, 0, 0, 1, 1, 1]), gl.DYNAMIC_DRAW);
         gl.bindFramebuffer(gl.FRAMEBUFFER, null);
         gl.viewport(0, 0, gl.canvas.width, gl.canvas.height);
@@ -448,14 +448,29 @@ function tranformCorner(corner) {
             return null;
     }
 }
-let hasShutter = false;
+let useShutter = false;
 const rootLock = false;
 async function loadElmnts() {
-    const config = await (await fetch("/config")).json();
+    let config = await (await fetch("/config")).json();
     console.log(config);
+    if (!Array.isArray(config)) {
+        throw new Error(`gl.ts loadElmnts(): config is not an array`);
+    }
     for (let el of config) {
+        if (!Array.isArray(el)) {
+            throw new Error(`gl.ts loadElmnts(): config[...] is not an array`);
+        }
         const id = el[0];
         const props = el[2];
+        if (typeof id != "string") {
+            throw new Error(`gl.ts loadElmnts(): config[...][0] is not a string`);
+        }
+        if (typeof el[1] != "string") {
+            throw new Error(`gl.ts loadElmnts(): config[...][1] is not a string`);
+        }
+        if (!Array.isArray(props)) {
+            throw new Error(`gl.ts loadElmnts(): config[...][2] is not an array`);
+        }
         switch (el[1]) {
             case "img":
                 elmnts.add(new ImgElmnt(id, props));
@@ -468,7 +483,7 @@ async function loadElmnts() {
                     console.error(`found more than one root config`);
                 }
                 else {
-                    const a = {
+                    const updateParImpl = {
                         updatePars(par, value, sacn) {
                             const corner = par.slice(0, 2);
                             const coord = par.slice(2);
@@ -481,7 +496,7 @@ async function loadElmnts() {
                                     textureLoadIndicator(false);
                                     const img = new Image();
                                     img.src = assets.get(value.toString());
-                                    hasShutter = true;
+                                    useShutter = true;
                                     img.addEventListener("load", () => {
                                         gl.bindTexture(gl.TEXTURE_2D, lg.shutterTex);
                                         gl.texImage2D(gl.TEXTURE_2D, 0, gl.RGBA, gl.RGBA, gl.UNSIGNED_BYTE, img);
@@ -495,7 +510,7 @@ async function loadElmnts() {
                             }
                         }
                     };
-                    props.forEach(Elmnt.prototype.initPar.bind(a));
+                    props.forEach(Elmnt.prototype.initPar.bind(updateParImpl));
                 }
                 break;
         }

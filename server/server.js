@@ -33,6 +33,11 @@ const path = __importStar(require("path"));
 if (!global?.callOptions)
     global.callOptions = {};
 const port = callOptions?.port ?? parseInt(process.argv[3]);
+if (isNaN(port)) {
+    console.log(`API:
+node server.js [database] [port]`);
+    process.exit();
+}
 exports.dbFile = "";
 const express_1 = __importDefault(require("express"));
 const db_js_1 = require("./src/db.js");
@@ -43,10 +48,12 @@ const express_ws_1 = __importDefault(require("express-ws"));
 const clientConfig_js_1 = require("./src/clientConfig.js");
 // import { join } from "path";
 async function main() {
-    const dbFile_ = callOptions?.file || path.join(__dirname, process.argv[2]);
-    if (!fs.pathExistsSync(dbFile_)) {
+    let dbFile_ = callOptions?.file || path.resolve(process.argv[2]);
+    if (!fs.pathExistsSync(dbFile_) && !callOptions?.file) {
+        console.log("resolved path:", dbFile_);
         console.error("database does not exist");
         process.exit(1);
+        return;
     }
     exports.dbFile = dbFile_;
     const app = (0, express_1.default)();
@@ -59,7 +66,7 @@ async function main() {
         res.sendFile(path.join(__dirname, "../client/client.html"));
     });
     process.stdout.write("reading file ...");
-    (0, db_js_1.init_db)().then(() => {
+    (0, db_js_1.init_db)().then(async () => {
         console.log(" finished");
         (0, assets_js_1.staticAssets)(app);
         (0, sacn_js_1.initSacn)();
@@ -69,6 +76,10 @@ async function main() {
                 res.end(config);
             });
         });
+        if (callOptions?.editor) {
+            const mod = await Promise.resolve().then(() => __importStar(require("./editor-backend/editor-backend.js")));
+            mod.initEditor(db_js_1.db);
+        }
         if (callOptions?.randomPort) {
             const server = app.listen(() => {
                 //@ts-ignore
