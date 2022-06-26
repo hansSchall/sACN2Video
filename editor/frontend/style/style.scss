@@ -29,15 +29,83 @@ main {
         >.content {
             overflow: auto;
             padding: .5rem;
-            flex: 1 1 auto;
+            flex: 0 1 auto;
         }
 
         .item {
             border-radius: .3rem;
             padding: .4rem .5rem;
+            border: 0;
+            display: block;
+            outline: none !important;
+            width: calc(100% - 1.001rem);
+            font-size: 1rem;
+            color: currentColor;
+            user-select: none;
 
-            &:hover {
+            &:hover,
+            &:focus {
                 background-color: #111;
+            }
+
+            &:is(input) {
+                background-color: #080808;
+            }
+        }
+
+        .item-label {
+            font-weight: 900;
+            margin-left: .5rem;
+            margin-top: .5rem;
+            margin-bottom: .1rem;
+        }
+
+        .buttonArea {
+            flex: 0 0 auto;
+            padding: .5rem;
+            overflow: auto;
+            // height: 2rem;
+            // background-color: purple;
+            display: flex;
+            align-items: center;
+            flex-direction: row;
+            gap: .5rem;
+            // justify-content: stretch;
+
+            .big-button {
+                background-color: #fe5000;
+                color: #111;
+                border-radius: .3rem;
+                display: flex;
+                align-items: center;
+                justify-content: center;
+                padding: .3rem 1rem;
+                font-size: 1.2rem;
+                user-select: none;
+                font-weight: 600;
+                border: .2rem solid #0000;
+                box-sizing: border-box;
+                outline: none !important;
+
+                &.cl-green {
+                    background-color: forestgreen;
+                }
+
+                &.cl-red {
+                    background-color: rgb(238, 43, 43);
+                }
+
+                >.bi {
+                    // font-size: 1.2rem;
+                    // vertical-align: bottom;
+                    padding-left: .5rem;
+                    transform: translateY(.1rem) scale(1.2);
+                }
+
+                &:hover,
+                &:focus {
+                    border-color: #2228;
+                }
             }
         }
     }
@@ -98,5 +166,14 @@ aside {
 
 #preview {
     background-color: #111;
+    display: flex;
+    align-items: center;
+    justify-content: center;
 
+    iframe {
+        width: 100%;
+        height: 100%;
+        border: 0;
+        border-left: .2rem solid #222;
+    }
 }

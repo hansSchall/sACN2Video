@@ -23,6 +23,7 @@ var __importStar = (this && this.__importStar) || function (mod) {
     return result;
 };
 Object.defineProperty(exports, "__esModule", { value: true });
+exports.serverPort = void 0;
 global.callOptions = {
     delayInit: true,
 };
@@ -36,7 +37,7 @@ var FileMode;
     FileMode[FileMode["EditSplit"] = 2] = "EditSplit";
     FileMode[FileMode["Cancel"] = 3] = "Cancel";
 })(FileMode || (FileMode = {}));
-let serverPort = 0;
+exports.serverPort = 0;
 async function main() {
     const startEditor = process.argv[3];
     let file = process.argv[2];
@@ -88,12 +89,15 @@ async function main() {
             autoHideMenuBar: true,
             title: "sACN2Video editor",
             backgroundColor: "#fe5000",
+            webPreferences: {
+                preload: path.join(__dirname, "./preload/preload.js")
+            }
         });
     }
     global.callOptions = {
         delayInit: true,
         portCb: (port) => {
-            serverPort = port;
+            exports.serverPort = port;
             if (viewer)
                 viewer.loadURL("http://localhost:" + port + "/");
             if (editor)

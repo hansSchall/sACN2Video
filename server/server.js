@@ -44,9 +44,10 @@ const clientConfig_js_1 = require("./src/clientConfig.js");
 // import { join } from "path";
 async function main() {
     const dbFile_ = callOptions?.file || path.join(__dirname, process.argv[2]);
-    if (!fs.pathExistsSync(dbFile_)) {
+    if (!fs.pathExistsSync(dbFile_) && !callOptions?.file) {
         console.error("database does not exist");
         process.exit(1);
+        return;
     }
     exports.dbFile = dbFile_;
     const app = (0, express_1.default)();

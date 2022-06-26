@@ -1,3 +1,4 @@
+import { Assets } from "./assets.js";
 import { PropsEditor } from "./props.editor.js";
 
 window.addEventListener("load", () => {
@@ -8,8 +9,16 @@ window.addEventListener("load", () => {
 })
 
 function App() {
-    const [rootView, setRootView] = React.useState("props")
+    const [rootView, setRootView] = React.useState("assets")
     const [splitscreen, setSplitscreen] = React.useState(false)
+    const [previewUrl, setPreviewUrl] = React.useState("");
+    React.useEffect(() => {
+        preload.getPreviewUrl().then(setPreviewUrl);
+    })
+    function reloadPreview() {
+        setPreviewUrl("");
+        preload.getPreviewUrl().then(setPreviewUrl);
+    }
     return <>
         <aside>
             <div>
@@ -21,7 +30,7 @@ function App() {
             <div className={rootView == "props" ? "active" : ""} onClick={() => setRootView("props")}>
                 <i className="bi-clipboard"></i>
             </div>
-            <div>
+            <div onClick={reloadPreview}>
                 <i className="bi-arrow-clockwise"></i>
             </div>
             <div className={splitscreen ? "active" : ""} onClick={() => setSplitscreen(!splitscreen)}>
@@ -29,12 +38,14 @@ function App() {
             </div>
         </aside>
         <article>
-            {rootView == "props" ? <PropsEditor /> : "add assets"}
-
+            {rootView == "props" ? <PropsEditor /> : <Assets />}
         </article>
         {splitscreen ?
             <article id="preview">
-
+                {previewUrl ?
+                    <iframe src={previewUrl}></iframe> :
+                    <span >loading preview...</span>
+                }
             </article> : null
         }
     </>

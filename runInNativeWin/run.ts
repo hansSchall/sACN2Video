@@ -13,7 +13,7 @@ enum FileMode {
     Cancel
 }
 
-let serverPort = 0;
+export let serverPort = 0;
 
 async function main() {
     const startEditor = process.argv[3];
@@ -65,6 +65,9 @@ async function main() {
             autoHideMenuBar: true,
             title: "sACN2Video editor",
             backgroundColor: "#fe5000",
+            webPreferences: {
+                preload: path.join(__dirname, "./preload/preload.js")
+            }
         })
     }
     global.callOptions = {
