@@ -102,7 +102,18 @@ export function initEditor(db: Database) {
     })
 
     electron.ipcMain.handle("add-asset", (ev, id: string, file: string, label: string, mime: string) => {
-        return addAsset(process.stdout.write, id, file, label, mime);
+        return addAsset((msg) => {
+            process.stdout.write(msg);
+        }, id, file, label, mime);
+    })
+
+    electron.ipcMain.handle("delete-asset", async (ev, id: string) => {
+        if (await warn(ev, `Asset '${id}' wirklich löschen?`)) {
+            await db.run("DELETE FROM assets WHERE id = ?", id);
+            return true;
+        } else {
+            return false;
+        }
     })
 
     electron.ipcMain.on("logger", (ev) => {

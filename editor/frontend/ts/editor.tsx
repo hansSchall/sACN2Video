@@ -9,7 +9,7 @@ window.addEventListener("load", () => {
 })
 
 function App() {
-    const [rootView, setRootView] = React.useState("props")
+    const [rootView, setRootView] = React.useState("assets")
     const [splitscreen, setSplitscreen] = React.useState(false)
     const [previewUrl, setPreviewUrl] = React.useState("");
     React.useEffect(() => {

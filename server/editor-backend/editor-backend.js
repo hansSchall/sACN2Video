@@ -85,7 +85,18 @@ function initEditor(db) {
         })).filePaths[0];
     });
     electronLink_js_1.electron.ipcMain.handle("add-asset", (ev, id, file, label, mime) => {
-        return (0, asset_js_1.addAsset)(process.stdout.write, id, file, label, mime);
+        return (0, asset_js_1.addAsset)((msg) => {
+            process.stdout.write(msg);
+        }, id, file, label, mime);
+    });
+    electronLink_js_1.electron.ipcMain.handle("delete-asset", async (ev, id) => {
+        if (await warn(ev, `Asset '${id}' wirklich löschen?`)) {
+            await db.run("DELETE FROM assets WHERE id = ?", id);
+            return true;
+        }
+        else {
+            return false;
+        }
     });
     electronLink_js_1.electron.ipcMain.on("logger", (ev) => {
         const port = ev.ports[0];

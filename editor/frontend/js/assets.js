@@ -1,4 +1,5 @@
 import { AddAsset } from "./add.asset.js";
+import { AssetDetails } from "./detail.assets.js";
 export function Assets() {
     function loadList() {
         updateList(null);
@@ -19,7 +20,7 @@ export function Assets() {
                 React.createElement("div", { className: "content" }, assets ? (assets.length ? assets.map(asset => React.createElement("div", { key: asset, className: "item", onClick: () => select(asset) }, asset)) : "no items") : "loading ..."));
         }
         else {
-            return React.createElement(React.Fragment, null, "loading ...");
+            return React.createElement(AssetDetails, { id: selected, back: () => select(-1) });
         }
     }
     else {

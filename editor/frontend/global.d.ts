@@ -33,7 +33,8 @@ declare const preload: {
     assets: {
         list: () => Promise<string[]>,
         fileDialog: () => Promise<string>,
-        add: (id: string, file: string, label: string, mime: string) => Promise<void>
+        add: (id: string, file: string, label: string, mime: string) => Promise<void>,
+        delete: (id: string) => Promise<boolean>
     },
     isSplitscreenEnabled: () => Promise<boolean>;
 }

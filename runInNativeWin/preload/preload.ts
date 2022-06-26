@@ -65,6 +65,9 @@ contextBridge.exposeInMainWorld("preload", {
         },
         add(id: string, file: string, label: string, mime: string): Promise<void> {
             return ipcRenderer.invoke("add-asset", id, file, label, mime);
+        },
+        delete(id: string) {
+            return ipcRenderer.invoke("delete-asset", id);
         }
     },
     startLogger(onMsg: (msg: string) => void) {

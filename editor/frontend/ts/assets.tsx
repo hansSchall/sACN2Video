@@ -1,4 +1,5 @@
 import { AddAsset } from "./add.asset.js";
+import { AssetDetails } from "./detail.assets.js";
 
 export function Assets() {
     function loadList() {
@@ -25,7 +26,7 @@ export function Assets() {
                 </div>
             </>
         } else {
-            return <>loading ...</>
+            return <AssetDetails id={selected} back={() => select(-1)} />
         }
     } else {
         return <AddAsset back={() => {

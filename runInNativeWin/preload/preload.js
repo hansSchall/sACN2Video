@@ -54,6 +54,9 @@ electron_1.contextBridge.exposeInMainWorld("preload", {
         },
         add(id, file, label, mime) {
             return electron_1.ipcRenderer.invoke("add-asset", id, file, label, mime);
+        },
+        delete(id) {
+            return electron_1.ipcRenderer.invoke("delete-asset", id);
         }
     },
     startLogger(onMsg) {
