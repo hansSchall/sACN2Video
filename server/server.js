@@ -33,6 +33,11 @@ const path = __importStar(require("path"));
 if (!global?.callOptions)
     global.callOptions = {};
 const port = callOptions?.port ?? parseInt(process.argv[3]);
+if (isNaN(port)) {
+    console.log(`API:
+node server.js [database] [port]`);
+    process.exit();
+}
 exports.dbFile = "";
 const express_1 = __importDefault(require("express"));
 const db_js_1 = require("./src/db.js");
@@ -43,8 +48,9 @@ const express_ws_1 = __importDefault(require("express-ws"));
 const clientConfig_js_1 = require("./src/clientConfig.js");
 // import { join } from "path";
 async function main() {
-    const dbFile_ = callOptions?.file || path.join(__dirname, process.argv[2]);
+    let dbFile_ = callOptions?.file || path.resolve(process.argv[2]);
     if (!fs.pathExistsSync(dbFile_) && !callOptions?.file) {
+        console.log("resolved path:", dbFile_);
         console.error("database does not exist");
         process.exit(1);
         return;
