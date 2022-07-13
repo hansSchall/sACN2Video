@@ -8,7 +8,7 @@ Special transformation functions to match the projection surface's geomety are i
 
 If you want to use it, feel free to ask everything.
 
-## How does it work
+## How does it work ?
 
 - All the images and videos are rendered onto a virtual canvas.
 - The intensity/opacity, playback, position can be controlled via sACN
@@ -20,17 +20,16 @@ If you want to use it, feel free to ask everything.
 
 - sACN: 8 & 16bit, merging, priority
 - all configuration data (including all assets) is stored in one file (using a SQLite database). You can simply backup and share it.
-- GUI editor is included
+- GUI editor is included, but it is possible to edit the configuation directly
 
-## Structure
-````
-+ server
-+ client
-+ editor
-+ runInNativeWin
-````
+## Use cases
 
-**``Contribution welcome``**
+background for ...
+- theatre productions
+- art projects
+- shows of any type
+
+**``>>Contribution welcome<<``**
 
 ## usefull links
 
