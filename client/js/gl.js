@@ -1,18 +1,39 @@
+"use strict";
 let gl;
 const frameBufferSize = [window.screen.height, window.screen.width];
+function undefinedMsg(fnVal, msg) {
+    if (!fnVal) {
+        throw new Error(msg);
+    }
+    else {
+        return fnVal;
+    }
+}
+function getUniform(name) {
+    return undefinedMsg(uniforms.get(name), `'${name}' was not resolved during lookup`);
+}
 function createShader(gl, type, source) {
     const shader = gl.createShader(type);
+    if (!shader) {
+        throw new Error("WebGL Shader creation failed");
+    }
     gl.shaderSource(shader, source);
     gl.compileShader(shader);
     const success = gl.getShaderParameter(shader, gl.COMPILE_STATUS);
     if (success) {
         return shader;
     }
-    console.log(gl.getShaderInfoLog(shader));
-    gl.deleteShader(shader);
+    else {
+        console.error(gl.getShaderInfoLog(shader));
+        gl.deleteShader(shader);
+        throw new Error("WebGL Shader creation failed");
+    }
 }
 function createProgram(gl, vertexShader, fragmentShader) {
     const program = gl.createProgram();
+    if (!program) {
+        throw new Error("WebGL Program creation failed");
+    }
     gl.attachShader(program, vertexShader);
     gl.attachShader(program, fragmentShader);
     gl.linkProgram(program);
@@ -24,7 +45,16 @@ function createProgram(gl, vertexShader, fragmentShader) {
     gl.deleteProgram(program);
 }
 function compileShader(vertexCode, fragmentCode) {
-    return createProgram(gl, createShader(gl, gl.VERTEX_SHADER, vertexCode), createShader(gl, gl.FRAGMENT_SHADER, fragmentCode));
+    if (!gl) {
+        throw new Error("WebGLContext is undefined");
+    }
+    const pr = createProgram(gl, createShader(gl, gl.VERTEX_SHADER, vertexCode), createShader(gl, gl.FRAGMENT_SHADER, fragmentCode));
+    if (pr) {
+        return pr;
+    }
+    else {
+        throw new Error("WebGL Program creation failed");
+    }
 }
 function resizeCanvasToDisplaySize(canvas, gl) {
     const displayWidth = canvas.clientWidth;
@@ -63,14 +93,14 @@ async function initGl() {
     updateStatus("creating WebGL context");
     fpsEl = $("#fps");
     const canvas = $("#c");
-    gl = canvas.getContext("webgl2");
+    gl = canvas.getContext("webgl2") || undefined;
     if (!gl) {
         updateStatus("[ERROR] WebGL not supported", "error");
         throw new Error("no WebGL");
     }
     gl.enable(gl.BLEND);
     gl.blendFunc(gl.SRC_ALPHA, gl.ONE_MINUS_SRC_ALPHA);
-    window.addEventListener("resize", () => resizeCanvasToDisplaySize(canvas, gl));
+    window.addEventListener("resize", () => gl && resizeCanvasToDisplaySize(canvas, gl));
     resizeCanvasToDisplaySize(canvas, gl);
     console.log(`%c [${timeSinceAppStart()}] √ created WebGL context`, "color: #0f0");
     updateStatus("loading shaders");
@@ -83,19 +113,22 @@ async function initGl() {
     const vertexCode = [
         flags.transform ? "#define FLIP (u_mode == 2)" : "#define FLIP true"
     ].join("\n") + "\n\n" + assets.get("vertex.shader");
-    lg.pr = compileShader(vertexCode, fragmentCode);
-    gl.useProgram(lg.pr);
+    const program = compileShader(vertexCode, fragmentCode);
+    gl.useProgram(program);
     console.log(`%c [${timeSinceAppStart()}] √ created WebGL shaders`, "color: #0f0");
     updateStatus("initializing");
     ["u_texture", "u_fbTex", "u_shutter", "u_mode", "u_shutterMode", "u_opacity", "u_eTL", "u_eTR", "u_eBL", "u_eBR"]
-        .forEach(uname => uniforms.set(uname, gl.getUniformLocation(lg.pr, uname)));
-    lg.objPosLoc = gl.getAttribLocation(lg.pr, "a_objectPos");
-    lg.texPosLoc = gl.getAttribLocation(lg.pr, "a_texturePos");
-    lg.objPosBuf = gl.createBuffer();
-    lg.texPosBuf = gl.createBuffer();
-    lg.fb = gl.createFramebuffer();
-    lg.fbTex = gl.createTexture();
-    lg.shutterTex = gl.createTexture();
+        .forEach(uname => uniforms.set(uname, undefinedMsg(gl?.getUniformLocation(program, uname), "failed to resolve uniform")));
+    lg = {
+        objPosLoc: gl.getAttribLocation(program, "a_objectPos"),
+        texPosLoc: gl.getAttribLocation(program, "a_texturePos"),
+        objPosBuf: undefinedMsg(gl.createBuffer(), "buffer creation failed"),
+        texPosBuf: undefinedMsg(gl.createBuffer(), "buffer creation failed"),
+        fb: undefinedMsg(gl.createFramebuffer(), "framebuffer creation failed"),
+        fbTex: undefinedMsg(gl.createTexture(), "texture creation failed"),
+        shutterTex: undefinedMsg(gl.createTexture(), "texture creation failed"),
+        pr: program
+    };
     gl.bindTexture(gl.TEXTURE_2D, lg.fbTex);
     gl.texImage2D(gl.TEXTURE_2D, 0, gl.RGBA, frameBufferSize[1], frameBufferSize[0], 0, gl.RGBA, gl.UNSIGNED_BYTE, null);
     gl.texParameteri(gl.TEXTURE_2D, gl.TEXTURE_MIN_FILTER, gl.LINEAR);
@@ -105,20 +138,20 @@ async function initGl() {
     gl.bindFramebuffer(gl.FRAMEBUFFER, lg.fb);
     gl.framebufferTexture2D(gl.FRAMEBUFFER, gl.COLOR_ATTACHMENT0, gl.TEXTURE_2D, lg.fbTex, 0);
     gl.bindFramebuffer(gl.FRAMEBUFFER, null);
-    gl.uniform1i(uniforms.get("u_texture"), 0);
+    gl.uniform1i(getUniform("u_texture"), 0);
     gl.activeTexture(gl.TEXTURE1);
     gl.bindTexture(gl.TEXTURE_2D, lg.fbTex);
-    gl.uniform1i(uniforms.get("u_fbTex"), 1);
+    gl.uniform1i(getUniform("u_fbTex"), 1);
     gl.activeTexture(gl.TEXTURE2);
     gl.bindTexture(gl.TEXTURE_2D, lg.shutterTex);
-    gl.uniform1i(uniforms.get("u_shutter"), 2);
+    gl.uniform1i(getUniform("u_shutter"), 2);
     gl.activeTexture(gl.TEXTURE1);
-    gl.uniform1i(uniforms.get("u_mode"), 0);
-    gl.uniform1i(uniforms.get("u_shutterMode"), 1);
-    gl.uniform2f(uniforms.get("u_eTL"), 0, 0);
-    gl.uniform2f(uniforms.get("u_eTR"), 1, 0);
-    gl.uniform2f(uniforms.get("u_eBL"), 0, 1);
-    gl.uniform2f(uniforms.get("u_eBR"), 1, 1);
+    gl.uniform1i(getUniform("u_mode"), 0);
+    gl.uniform1i(getUniform("u_shutterMode"), 1);
+    gl.uniform2f(getUniform("u_eTL"), 0, 0);
+    gl.uniform2f(getUniform("u_eTR"), 1, 0);
+    gl.uniform2f(getUniform("u_eBL"), 0, 1);
+    gl.uniform2f(getUniform("u_eBR"), 1, 1);
     gl.bindBuffer(gl.ARRAY_BUFFER, lg.objPosBuf);
     gl.vertexAttribPointer(lg.objPosLoc, 2, gl.FLOAT, false, 0, 0);
     gl.enableVertexAttribArray(lg.objPosLoc);
@@ -134,15 +167,18 @@ async function initGl() {
         hideInfos();
     });
 }
-const lg = {};
+let lg;
 const uniforms = new Map();
 let renderCycle = 0;
 const clockPrescaler = flags.clockPrescaler;
 function updateTransform(transformProps) {
-    gl.uniform2f(uniforms.get("u_eTL"), ...transformProps[0]);
-    gl.uniform2f(uniforms.get("u_eTR"), ...transformProps[1]);
-    gl.uniform2f(uniforms.get("u_eBL"), ...transformProps[2]);
-    gl.uniform2f(uniforms.get("u_eBR"), ...transformProps[3]);
+    if (!gl) {
+        throw new Error("WebGLContext is undefined");
+    }
+    gl.uniform2f(getUniform("u_eTL"), ...transformProps[0]);
+    gl.uniform2f(getUniform("u_eTR"), ...transformProps[1]);
+    gl.uniform2f(getUniform("u_eBL"), ...transformProps[2]);
+    gl.uniform2f(getUniform("u_eBR"), ...transformProps[3]);
 }
 function render() {
     renderCycle++;
@@ -154,6 +190,9 @@ function render() {
         renderCycle = 0;
     }
     const startRender = performance.now();
+    if (!gl) {
+        throw new Error("WebGLContext is undefined");
+    }
     resizeCanvasToDisplaySize(gl.canvas, gl);
     updateTransform(transformProps);
     gl.activeTexture(gl.TEXTURE1);
@@ -168,26 +207,26 @@ function render() {
         gl.viewport(0, 0, gl.canvas.width, gl.canvas.height);
     }
     gl.clear(gl.COLOR_BUFFER_BIT | gl.DEPTH_BUFFER_BIT);
-    gl.uniform1i(uniforms.get("u_mode"), 1);
+    gl.uniform1i(getUniform("u_mode"), 1);
     gl.bindBuffer(gl.ARRAY_BUFFER, lg.objPosBuf);
     for (let el of elmnts) {
         const op = el.getOpacity();
         if (op == 0)
             continue;
-        gl.uniform1f(uniforms.get("u_opacity"), op);
+        gl.uniform1f(getUniform("u_opacity"), op);
         el.bufferPos();
         el.bindTex();
         gl.drawArrays(gl.TRIANGLES, 0, 6);
     }
     if (flags.transform) {
-        gl.uniform1i(uniforms.get("u_shutterMode"), useShutter ? 1 : 0);
+        gl.uniform1i(getUniform("u_shutterMode"), useShutter ? 1 : 0);
         gl.bufferData(gl.ARRAY_BUFFER, new Float32Array([0, 0, 1, 0, 1, 1, 0, 0, 0, 1, 1, 1]), gl.DYNAMIC_DRAW);
         gl.bindFramebuffer(gl.FRAMEBUFFER, null);
         gl.viewport(0, 0, gl.canvas.width, gl.canvas.height);
         gl.clear(gl.COLOR_BUFFER_BIT | gl.DEPTH_BUFFER_BIT);
         gl.activeTexture(gl.TEXTURE1);
         gl.bindTexture(gl.TEXTURE_2D, lg.fbTex);
-        gl.uniform1i(uniforms.get("u_mode"), 2);
+        gl.uniform1i(getUniform("u_mode"), 2);
         gl.drawArrays(gl.TRIANGLES, 0, 6);
     }
     renderTime.push(performance.now() - startRender);
@@ -203,7 +242,10 @@ class Elmnt {
         this.id = id;
         this.opacity = 0;
         this.pos = { x: 0, y: 0, h: 1, w: 1 };
-        this.tex = gl.createTexture();
+        if (!gl) {
+            throw new Error("WebGLContext is undefined");
+        }
+        this.tex = undefinedMsg(gl.createTexture(), "texture creation failed");
         gl.bindTexture(gl.TEXTURE_2D, this.tex);
         gl.texParameteri(gl.TEXTURE_2D, gl.TEXTURE_WRAP_S, gl.CLAMP_TO_EDGE);
         gl.texParameteri(gl.TEXTURE_2D, gl.TEXTURE_WRAP_T, gl.CLAMP_TO_EDGE);
@@ -213,11 +255,11 @@ class Elmnt {
     getOpacity() {
         return this.opacity;
     }
-    bindTex(bindPoint = gl.TEXTURE_2D) {
-        gl.bindTexture(bindPoint, this.tex);
+    bindTex(bindPoint = gl?.TEXTURE_2D || 0) {
+        gl?.bindTexture(bindPoint, this.tex);
     }
     bufferPos() {
-        gl.bufferData(gl.ARRAY_BUFFER, Pos2Buffer(this.pos), gl.DYNAMIC_DRAW);
+        gl?.bufferData(gl.ARRAY_BUFFER, Pos2Buffer(this.pos), gl.DYNAMIC_DRAW);
     }
     updatePars(par, value, sacn) {
         switch (par) {
@@ -245,7 +287,7 @@ class Elmnt {
         type = type.toLowerCase();
         function addSacnListener(addr, listener) {
             if (sacnListener.has(addr)) {
-                sacnListener.get(addr).add(listener);
+                sacnListener.get(addr)?.add(listener);
             }
             else {
                 sacnListener.set(addr, new Set([listener]));
@@ -298,11 +340,17 @@ class Elmnt {
 class ImgElmnt extends Elmnt {
     constructor(id, props) {
         super(id);
+        if (!gl) {
+            throw new Error("WebGLContext is undefined");
+        }
         gl.bufferData(gl.ARRAY_BUFFER, new Float32Array([0, 0, 1, 0, 1, 1, 0, 0, 0, 1, 1, 1]), gl.STATIC_DRAW);
         const img = new Image();
-        img.src = assets.get(props.find(_ => _[0] == "src")[2]);
+        img.src = assets.get(props.find(_ => _[0] == "src")?.[2] ?? "") ?? "";
         textureLoadIndicator(false);
         img.addEventListener('load', () => {
+            if (!gl) {
+                throw new Error("WebGLContext is undefined");
+            }
             // Now that the image has loaded make copy it to the texture.
             gl.bindTexture(gl.TEXTURE_2D, this.tex);
             gl.texImage2D(gl.TEXTURE_2D, 0, gl.RGBA, gl.RGBA, gl.UNSIGNED_BYTE, img);
@@ -319,6 +367,9 @@ class VideoElmnt extends Elmnt {
     constructor(id, props) {
         super(id);
         this.loaded = false;
+        if (!gl) {
+            throw new Error("WebGLContext is undefined");
+        }
         gl.bufferData(gl.ARRAY_BUFFER, new Float32Array([0, 0, 1, 0, 1, 1, 0, 0, 0, 1, 1, 1]), gl.STATIC_DRAW);
         this.video = document.createElement("video");
         this.video.addEventListener('playing', () => {
@@ -328,7 +379,7 @@ class VideoElmnt extends Elmnt {
             console.log(`%c [${timeSinceAppStart()}] mounted ${id}`, "color: #0f0");
             textureLoadIndicator(true);
         });
-        this.video.src = assets.get(props.find(_ => _[0] == "src")[2]);
+        this.video.src = assets.get(props.find(_ => _[0] == "src")?.[2] ?? "") ?? "";
         this.playback = new Playback(this.video);
         textureLoadIndicator(false);
         props.forEach(this.initPar.bind(this));
@@ -337,6 +388,9 @@ class VideoElmnt extends Elmnt {
         super.bindTex(bindPoint);
         if (!this.loaded)
             return;
+        if (!gl) {
+            throw new Error("WebGLContext is undefined");
+        }
         gl.texImage2D(gl.TEXTURE_2D, 0, gl.RGBA, gl.RGBA, gl.UNSIGNED_BYTE, this.video);
     }
     updatePars(par, value, sacn) {
@@ -362,7 +416,7 @@ class AudioElmnt extends Elmnt {
             console.log(`%c [${timeSinceAppStart()}] mounted ${id}`, "color: #0f0");
             textureLoadIndicator(true);
         });
-        this.audio.src = assets.get(props.find(_ => _[0] == "src")[2]);
+        this.audio.src = assets.get(props.find(_ => _[0] == "src")?.[2] ?? "") ?? "";
         this.playback = new Playback(this.audio);
         textureLoadIndicator(false);
         props.forEach(this.initPar.bind(this));
@@ -371,6 +425,9 @@ class AudioElmnt extends Elmnt {
         super.bindTex(bindPoint);
         if (!this.loaded)
             return;
+        if (!gl) {
+            throw new Error("WebGLContext is undefined");
+        }
         gl.texImage2D(gl.TEXTURE_2D, 0, gl.RGBA, gl.RGBA, gl.UNSIGNED_BYTE, this.audio);
     }
     updatePars(par, value, sacn) {
@@ -490,16 +547,19 @@ async function loadElmnts() {
                             const corner = par.slice(0, 2);
                             const coord = par.slice(2);
                             if (corner.length == 2 && coord.length == 1) {
-                                transformProps[tranformCorner(corner)][coord == "X" ? 0 : 1] =
+                                transformProps[tranformCorner(corner) ?? 0][coord == "X" ? 0 : 1] =
                                     parseFloat(value);
                             }
                             else {
                                 if (par == "shutter") {
                                     textureLoadIndicator(false);
                                     const img = new Image();
-                                    img.src = assets.get(value.toString());
+                                    img.src = assets.get(value.toString()) ?? "";
                                     useShutter = true;
                                     img.addEventListener("load", () => {
+                                        if (!gl) {
+                                            throw new Error("WebGLContext is undefined");
+                                        }
                                         gl.bindTexture(gl.TEXTURE_2D, lg.shutterTex);
                                         gl.texImage2D(gl.TEXTURE_2D, 0, gl.RGBA, gl.RGBA, gl.UNSIGNED_BYTE, img);
                                         gl.texParameteri(gl.TEXTURE_2D, gl.TEXTURE_WRAP_S, gl.CLAMP_TO_EDGE);

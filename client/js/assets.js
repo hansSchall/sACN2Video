@@ -1,3 +1,4 @@
+"use strict";
 async function loadAssets(additional = []) {
     const uiEl = $("#files");
     uiEl.innerText = "indexing assets";

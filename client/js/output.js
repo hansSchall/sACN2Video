@@ -1,3 +1,4 @@
+"use strict";
 function timeSinceAppStart() {
     return Date.now() - firstScriptTimestamp + "ms";
 }
