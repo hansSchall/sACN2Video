@@ -264,7 +264,9 @@ class Elmnt {
         }
         else if (type.startsWith("sacn")) {
             if (type == "sacn" || type == "sacn8") {
-                const addr = parseInt(value);
+                const a = value.split("/").map(_ => parseInt(_)).filter(_ => !isNaN(_));
+                const addr = (a[0] - 1) * 512 + a[1];
+                console.log(addr, value);
                 addSacnListener(addr, value => {
                     this.updatePars(name, value / 255, true);
                 });
