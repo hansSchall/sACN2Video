@@ -33,7 +33,7 @@ const path = __importStar(require("path"));
 if (!global?.callOptions)
     global.callOptions = {};
 const port = callOptions?.port ?? parseInt(process.argv[3]);
-if (isNaN(port)) {
+if (isNaN(port) && !callOptions.delayInit) {
     console.log(`API:
 node server.js [database] [port]`);
     process.exit();

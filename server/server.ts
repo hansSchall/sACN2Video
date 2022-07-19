@@ -3,7 +3,7 @@ import * as path from "path";
 //@ts-ignore
 if (!global?.callOptions) global.callOptions = {} as any;
 const port = callOptions?.port ?? parseInt(process.argv[3]);
-if (isNaN(port)) {
+if (isNaN(port) && !callOptions.delayInit) {
     console.log(`API:
 node server.js [database] [port]`);
     process.exit();
