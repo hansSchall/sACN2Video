@@ -1,3 +1,4 @@
+"use strict";
 class Sync {
     constructor(syncChan) {
         this.syncChan = syncChan;

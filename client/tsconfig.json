@@ -4,6 +4,7 @@
         "module": "es6",
         "outDir": "./js",
         "sourceMap": true,
-        "allowUmdGlobalAccess": true
+        "allowUmdGlobalAccess": true,
+        "strict": true
     }
 }
