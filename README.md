@@ -20,7 +20,7 @@ If you want to use it, feel free to ask everything.
 
 - sACN: 8 & 16bit, merging, priority
 - all configuration data (including all assets) is stored in one file (using a SQLite database). You can simply backup and share it.
-- GUI editor is included, but it is possible to edit the configuation directly [reference](/docs/config.md)
+- GUI editor is included, but it is possible to edit the configuation directly, [reference](/docs/config.md)
 - syncronisation with eos timecode for easy programming
 
 ## Use cases

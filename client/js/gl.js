@@ -304,29 +304,39 @@ class Elmnt {
                 this.updatePars(name, value, false);
             }
         }
-        else if (type.startsWith("sacn")) {
-            if (type == "sacn" || type == "sacn8") {
-                const a = value.split("/").map(_ => parseInt(_)).filter(_ => !isNaN(_));
-                const addr = (a[0] - 1) * 512 + a[1];
-                console.log(addr, value);
+        else if (type == "sacn") {
+            const rawaddr = value.split(/(\/|\+|\,|\.|\\)/).map(_ => parseInt(_)).filter(_ => !isNaN(_));
+            let addr;
+            if (rawaddr.length == 1) { // addr
+                addr = rawaddr[0];
+            }
+            else if (rawaddr.length == 2) { // universe/addr
+                addr = (rawaddr[0] - 1) * 512 + rawaddr[1];
+            }
+            else if (rawaddr.length == 3) { // universe/low/high
+                addr = [((rawaddr[0] - 1) * 512 + rawaddr[1]), ((rawaddr[0] - 1) * 512 + rawaddr[2])];
+            }
+            else if (rawaddr.length == 4) { // universelow/low/universehigh/high
+                addr = [((rawaddr[0] - 1) * 512 + rawaddr[1]), ((rawaddr[2] - 1) * 512 + rawaddr[3])];
+            }
+            else {
+                throw new Error("sacn value.length is not in the range of 1-4");
+            }
+            if (typeof addr == "number") { // 8
                 addSacnListener(addr, value => {
                     this.updatePars(name, value / 255, true);
                 });
             }
-            else if (type == "sacn16") {
-                const fulladdr = value.split("/");
-                const addrlow = parseInt(fulladdr[0]);
-                const addrhi = parseInt(fulladdr[1]);
+            else { // 16
                 let valuelow = 0, valuehi = 0;
                 const updateValue = (() => {
                     this.updatePars(name, ((valuehi << 8) + valuelow) / 65535, true);
                 }).bind(this);
-                addSacnListener(addrlow, value => {
+                addSacnListener(addr[0], value => {
                     valuelow = value;
-                    this;
                     updateValue();
                 });
-                addSacnListener(addrhi, value => {
+                addSacnListener(addr[1], value => {
                     valuehi = value;
                     updateValue();
                 });
