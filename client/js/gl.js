@@ -390,7 +390,7 @@ class VideoElmnt extends Elmnt {
             textureLoadIndicator(true);
         });
         this.video.src = assets.get(props.find(_ => _[0] == "src")?.[2] ?? "") ?? "";
-        this.playback = new Playback(this.video);
+        this.playback = new Playback(this.video, parseInt((props.find(_ => _[0] == "sync") ?? [])[2] ?? ""));
         textureLoadIndicator(false);
         props.forEach(this.initPar.bind(this));
     }
@@ -427,7 +427,7 @@ class AudioElmnt extends Elmnt {
             textureLoadIndicator(true);
         });
         this.audio.src = assets.get(props.find(_ => _[0] == "src")?.[2] ?? "") ?? "";
-        this.playback = new Playback(this.audio);
+        this.playback = new Playback(this.audio, parseInt(props.find(_ => _[0] == "sync")?.[2] ?? ""));
         textureLoadIndicator(false);
         props.forEach(this.initPar.bind(this));
     }
@@ -455,11 +455,23 @@ class AudioElmnt extends Elmnt {
     }
 }
 class Playback {
-    constructor(el) {
+    constructor(el, syncEnabled) {
         this.el = el;
+        this.syncEnabled = syncEnabled;
         this.playing = false;
         this.looping = false;
         this.beginning = false;
+        if (syncEnabled) {
+            this.sync = new Sync(syncEnabled);
+            el.addEventListener("ended", () => {
+                console.log("ended event");
+                if (this.looping) {
+                    this.el.currentTime = 0;
+                    this.el.play();
+                    this.sync?.restartTC();
+                }
+            });
+        }
     }
     updatePB(play, loop, begin) {
         if (!play && (begin || loop))
@@ -476,7 +488,8 @@ class Playback {
             anythingCanged = true;
         }
         if (loop != this.looping) {
-            this.looping = this.el.loop = loop;
+            this.looping = loop;
+            this.el.loop = false;
             anythingCanged = true;
         }
         if (begin != this.beginning) {
@@ -489,6 +502,12 @@ class Playback {
         }
         if (anythingCanged)
             console.log(this);
+        if (!this.el.paused) {
+            this.sync?.startTC?.(this.el.currentTime);
+        }
+        else {
+            this.sync?.stopTC?.();
+        }
     }
     parsePBState(value) {
         value = Math.floor(value / 10);

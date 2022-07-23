@@ -19,7 +19,12 @@
     "@types/express-ws": "^3.0.1",
     "@types/fs-extra": "^9.0.13",
     "@types/node": "^17.0.31",
+    "@types/node-osc": "^6.0.0",
     "@types/sqlite3": "^3.1.8",
     "@types/uuid": "^8.3.4"
+  },
+  "scripts": {
+    "build": "tsc",
+    "build-w": "tsc -w"
   }
 }

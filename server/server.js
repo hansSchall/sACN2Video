@@ -33,7 +33,7 @@ const path = __importStar(require("path"));
 if (!global?.callOptions)
     global.callOptions = {};
 const port = callOptions?.port ?? parseInt(process.argv[3]);
-if (isNaN(port)) {
+if (isNaN(port) && !callOptions.delayInit) {
     console.log(`API:
 node server.js [database] [port]`);
     process.exit();
@@ -46,6 +46,7 @@ const sacn_js_1 = require("./src/sacn.js");
 const socket_js_1 = require("./src/socket.js");
 const express_ws_1 = __importDefault(require("express-ws"));
 const clientConfig_js_1 = require("./src/clientConfig.js");
+const osc_1 = require("./src/osc");
 // import { join } from "path";
 async function main() {
     let dbFile_ = callOptions?.file || path.resolve(process.argv[2]);
@@ -70,6 +71,7 @@ async function main() {
         console.log(" finished");
         (0, assets_js_1.staticAssets)(app);
         (0, sacn_js_1.initSacn)();
+        (0, osc_1.initOSC)();
         (0, socket_js_1.initSocket)(app);
         app.get("/config", (req, res) => {
             (0, clientConfig_js_1.clientConfig)().then(config => {

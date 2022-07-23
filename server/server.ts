@@ -3,7 +3,7 @@ import * as path from "path";
 //@ts-ignore
 if (!global?.callOptions) global.callOptions = {} as any;
 const port = callOptions?.port ?? parseInt(process.argv[3]);
-if (isNaN(port)) {
+if (isNaN(port) && !callOptions.delayInit) {
     console.log(`API:
 node server.js [database] [port]`);
     process.exit();
@@ -16,6 +16,7 @@ import { initSacn } from "./src/sacn.js";
 import { initSocket } from "./src/socket.js";
 import expressWs from "express-ws";
 import { clientConfig } from "./src/clientConfig.js";
+import { initOSC } from "./src/osc";
 // import { join } from "path";
 
 export async function main() {
@@ -48,6 +49,7 @@ export async function main() {
         console.log(" finished");
         staticAssets(app);
         initSacn();
+        initOSC();
         initSocket(app as any as expressWs.Application);
         app.get("/config", (req, res) => {
             clientConfig().then(config => {

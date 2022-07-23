@@ -18,8 +18,9 @@ async function initSacn() {
     const sacn = new sacnMerge_js_1.ReceiverMerge({
         universes,
         reuseAddr: true,
+        iface: "10.101.111.1"
     });
-    // console.log("sacn listening on", universes);
+    console.log("sacn listening on", universes);
     let sendCache = [];
     exports.senderEv.on("clear", clear);
     function clear() {
@@ -33,6 +34,7 @@ async function initSacn() {
         sendCache = [];
     });
     sacn.on("changed", (ev) => {
+        // console.log(ev);
         sendCache.push(encode((ev.universe - 1) * 512 + ev.addr, Math.round(ev.newValue * 2.55)));
     });
 }

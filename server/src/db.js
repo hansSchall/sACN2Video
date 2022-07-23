@@ -13,6 +13,7 @@ async function init_db() {
         await Promise.all([exports.db.run("PRAGMA journal_mode = TRUNCATE"),
             exports.db.run(`CREATE TABLE IF NOT EXISTS assets (id text primary key, data BLOB, mime text, size number, label text, changeId text);`),
             exports.db.run(`CREATE TABLE IF NOT EXISTS config_universes (universe number);`),
+            exports.db.run(`CREATE TABLE IF NOT EXISTS config_osc (ip TEXT, port number);`),
             exports.db.run(`CREATE TABLE IF NOT EXISTS els (id text,type text,enabled NUMBER DEFAULT 1,zi float default 0,PRIMARY KEY(id));`),
             exports.db.run(`CREATE TABLE IF NOT EXISTS elProps (el text, prop text, valueType text, value text);`)]);
     }

@@ -85,6 +85,7 @@ Note: to apply changes you need to restart the whole server, not only the client
 | src | `img`, `video`, `audio` | the element's source; may only be `static` type; this references to the `id` column of the `assets` table
 | intens, intensity, i | `img`, `video` | the opacity of the element, note for `static`: it must be in the range of `0 - 1`
 | playback, pb | `video`, `audio` | see playback note below
+| sync | `video`, `audio` | refers to the eos timecode list, the video or audio should sync to (see also: note on sync)
 | x | `img`, `video` | the element's x position (0 = left, 1 = right)
 | y | `img`, `video` | the element's y position (0 = top, 1 = bottom)
 | w | `img`, `video` | the element's width (1 = as wide as the viewport)
@@ -109,3 +110,9 @@ Note: to apply changes you need to restart the whole server, not only the client
 | 26 - 35 | play from the beginning |
 | 36 - 45 | loop |
 | 46 - 55 | loop from the beginning |
+
+### note on sync
+
+It is possible to sync an etc eos timecode eventlist to an video or audio element.
+
+If enabled, sACN2Video will send OSC commands to eos to start and stop the timecode and sets the current time correctly.
