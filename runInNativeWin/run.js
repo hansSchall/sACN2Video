@@ -28,7 +28,7 @@ global.callOptions = {
     delayInit: true,
 };
 const electron_1 = require("electron");
-const server_js_1 = require("../server/server.js");
+const { main: serverMain } = require("../server/server.js");
 const path = __importStar(require("path"));
 var FileMode;
 (function (FileMode) {
@@ -111,6 +111,6 @@ async function main() {
         randomPort: true,
         editor: !!editor,
     };
-    (0, server_js_1.main)();
+    serverMain();
 }
 electron_1.app.whenReady().then(main);

@@ -1,5 +1,4 @@
 import { Express } from "express";
-import md5 from "md5";
 import { db } from "./db.js";
 
 export function staticAssets(app: Express) {

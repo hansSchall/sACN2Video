@@ -20,13 +20,9 @@ export async function initSacn() {
         sendCache = [];
         sacn.clearCache();
     }
-    // senderEv.on("clientconnected", clear);
-    // sacn.on("senderConnect", console.log);
     sacn.on("changesDone", () => {
         if (!sendCache.length) return;
-        // send data
         senderEv.emit("data", sendCache.join(";"));
-        // console.log(sendCache.join(";"));
         sendCache = [];
     });
     sacn.on("changed", (ev) => {

@@ -3,7 +3,9 @@ global.callOptions = {
 }
 
 import { app, BrowserWindow, dialog } from "electron";
-import { main as serverMain } from "../server/server.js";
+const { main: serverMain } = require("../server/server.js") as {
+    main: () => Promise<void>
+};
 import * as path from "path";
 
 enum FileMode {
