@@ -7,7 +7,7 @@ type Position = {
 declare const $: <T = HTMLElement>(query: string) => T;
 declare const $$: <T extends Node = HTMLElement>(query: string) => NodeListOf<T>;
 declare const $el: <T = HTMLElement>(classname?: string | string[], tagname?: string | null | undefined | 0 | false, html?: string, fn?: (el: T) => void) => T;
-interface HTMLElement extends Node {
+interface HTMLElement extends Element {
     $: <T = HTMLElement>(query: string) => T;
     $$: <T extends Node = HTMLElement>(query: string) => NodeListOf<T>;
     goUpInTree: (query: string) => HTMLElement | null;
