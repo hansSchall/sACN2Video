@@ -32,6 +32,10 @@ background for ...
 
 **``>>Contribution welcome<<``**
 
+## Installation
+
+see [docs/installation_and_running.md](docs/installation_and_running.md)
+
 ## usefull links
 
 - [db schema](/server/dbSchema.sql)
