@@ -12,7 +12,7 @@ export async function initSacn() {
     const sacn = new ReceiverMerge({
         universes,
         reuseAddr: true,
-        iface: "10.101.111.1"
+        // iface: "10.101.111.1"
     })
     console.log("sacn listening on", universes);
     let sendCache: string[] = [];
