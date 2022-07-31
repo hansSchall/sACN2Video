@@ -14,9 +14,14 @@
             }
         </script>
         <style>
+            :root{
+                --c: #fe5000;
+                --error: rgb(255, 0, 55);
+                --sucess: rgb(12, 158, 73);
+                --semitransparent: #000c;
+            }
             body{
                 background-color: black;
-                --c: #fe5000;
                 margin: 0;
                 font-family: sans-serif;
                 color: var(--c);
@@ -34,7 +39,7 @@
                 bottom: 0;
                 left: 0;
                 width: 100vw;
-                background-color: #000c;
+                background-color: var(--semitransparent);
                 display: flex;
                 align-items: center;
                 justify-content: space-between;
@@ -52,22 +57,13 @@
                 width: 100vw;
                 max-height: 100vh;
                 overflow: auto;
-                background-color: #000c;
+                background-color: var(--semitransparent);
             }
             #files .ok{
-                color: green;
+                color: var(--sucess);
             }
             #files .failed{
-                color: red;
-            }
-            #shutter{
-                display: block;
-                position: fixed;
-                top: 0;
-                left: 0;
-                width: 100vw;
-                height: 100vh;
-                object-fit: fill;
+                color: var(--error);
             }
             .hidden{
                 display: none !important;
