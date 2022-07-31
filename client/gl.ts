@@ -126,7 +126,7 @@ async function initGl() {
     gl.useProgram(program);
     console.log(`%c [${timeSinceAppStart()}] √ created WebGL shaders`, "color: #0f0")
     updateStatus("initializing");
-    ["u_texture", "u_fbTex", "u_shutter", "u_mode", "u_shutterMode", "u_opacity", "u_eTL", "u_eTR", "u_eBL", "u_eBR"]
+    ["u_texture", "u_fbTex", "u_mask", "u_mode", "u_maskMode", "u_opacity", "u_eTL", "u_eTR", "u_eBL", "u_eBR"]
         .forEach(uname => uniforms.set(uname, undefinedMsg(gl?.getUniformLocation(program, uname), "failed to resolve uniform")));
     lg = {
 
@@ -136,7 +136,7 @@ async function initGl() {
         texPosBuf: undefinedMsg(gl.createBuffer(), "buffer creation failed"),
         fb: undefinedMsg(gl.createFramebuffer(), "framebuffer creation failed"),
         fbTex: undefinedMsg(gl.createTexture(), "texture creation failed"),
-        shutterTex: undefinedMsg(gl.createTexture(), "texture creation failed"),
+        maskTex: undefinedMsg(gl.createTexture(), "texture creation failed"),
         pr: program
     }
 
@@ -145,7 +145,7 @@ async function initGl() {
     gl.texParameteri(gl.TEXTURE_2D, gl.TEXTURE_MIN_FILTER, gl.LINEAR);
     gl.texParameteri(gl.TEXTURE_2D, gl.TEXTURE_WRAP_S, gl.CLAMP_TO_EDGE);
     gl.texParameteri(gl.TEXTURE_2D, gl.TEXTURE_WRAP_T, gl.CLAMP_TO_EDGE);
-    gl.bindTexture(gl.TEXTURE_2D, lg.shutterTex)
+    gl.bindTexture(gl.TEXTURE_2D, lg.maskTex)
     gl.bindFramebuffer(gl.FRAMEBUFFER, lg.fb);
     gl.framebufferTexture2D(gl.FRAMEBUFFER, gl.COLOR_ATTACHMENT0, gl.TEXTURE_2D, lg.fbTex, 0);
     gl.bindFramebuffer(gl.FRAMEBUFFER, null);
@@ -154,11 +154,11 @@ async function initGl() {
     gl.bindTexture(gl.TEXTURE_2D, lg.fbTex);
     gl.uniform1i(getUniform("u_fbTex"), 1);
     gl.activeTexture(gl.TEXTURE2);
-    gl.bindTexture(gl.TEXTURE_2D, lg.shutterTex);
-    gl.uniform1i(getUniform("u_shutter"), 2);
+    gl.bindTexture(gl.TEXTURE_2D, lg.maskTex);
+    gl.uniform1i(getUniform("u_mask"), 2);
     gl.activeTexture(gl.TEXTURE1);
     gl.uniform1i(getUniform("u_mode"), 0);
-    gl.uniform1i(getUniform("u_shutterMode"), 1);
+    gl.uniform1i(getUniform("u_maskMode"), 1);
     gl.uniform2f(getUniform("u_eTL"), 0, 0);
     gl.uniform2f(getUniform("u_eTR"), 1, 0);
     gl.uniform2f(getUniform("u_eBL"), 0, 1);
@@ -186,7 +186,7 @@ let lg: {
     texPosBuf: WebGLBuffer,
     fb: WebGLFramebuffer,
     fbTex: WebGLTexture,
-    shutterTex: WebGLTexture,
+    maskTex: WebGLTexture,
 
 };
 const uniforms = new Map<string, WebGLUniformLocation>();
@@ -239,7 +239,7 @@ function render() {
         gl.drawArrays(gl.TRIANGLES, 0, 6);
     }
     if (flags.transform) {
-        gl.uniform1i(getUniform("u_shutterMode"), useShutter ? 1 : 0);
+        gl.uniform1i(getUniform("u_maskMode"), useMask ? 1 : 0);
         gl.bufferData(gl.ARRAY_BUFFER, new Float32Array([0, 0, 1, 0, 1, 1, 0, 0, 0, 1, 1, 1]), gl.DYNAMIC_DRAW);
         gl.bindFramebuffer(gl.FRAMEBUFFER, null);
         gl.viewport(0, 0, gl.canvas.width, gl.canvas.height);
@@ -560,7 +560,7 @@ function tranformCorner(corner: "TL" | "TR" | "BL" | "BR" | string) {
             return null;
     }
 }
-let useShutter = false;
+let useMask = false;
 const rootLock = false;
 async function loadElmnts() {
     let config: unknown = await (await fetch("/config")).json();
@@ -604,21 +604,21 @@ async function loadElmnts() {
                                 [coord == "X" ? 0 : 1] =
                                     parseFloat(value as string);
                             } else {
-                                if (par == "shutter") {
+                                if (par == "mask") {
                                     textureLoadIndicator(false);
                                     const img = new Image();
                                     img.src = assets.get(value.toString()) ?? "";
-                                    useShutter = true;
+                                    useMask = true;
                                     img.addEventListener("load", () => {
                                         if (!gl) {
                                             throw new Error("WebGLContext is undefined");
                                         }
-                                        gl.bindTexture(gl.TEXTURE_2D, lg.shutterTex);
+                                        gl.bindTexture(gl.TEXTURE_2D, lg.maskTex);
                                         gl.texImage2D(gl.TEXTURE_2D, 0, gl.RGBA, gl.RGBA, gl.UNSIGNED_BYTE, img);
                                         gl.texParameteri(gl.TEXTURE_2D, gl.TEXTURE_WRAP_S, gl.CLAMP_TO_EDGE);
                                         gl.texParameteri(gl.TEXTURE_2D, gl.TEXTURE_WRAP_T, gl.CLAMP_TO_EDGE);
                                         gl.texParameteri(gl.TEXTURE_2D, gl.TEXTURE_MIN_FILTER, gl.LINEAR);
-                                        console.log(`%c [${timeSinceAppStart()}] mounted shutter`, "color: #0f0");
+                                        console.log(`%c [${timeSinceAppStart()}] mounted mask`, "color: #0f0");
                                         textureLoadIndicator(true);
                                     })
                                 }

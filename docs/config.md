@@ -98,7 +98,7 @@ Note: to apply changes you need to restart the whole server, not only the client
 | BLY | `root` | y position of the bottom left corner of the virtual canvas
 | BRX | `root` | x position of the bottom right corner of the virtual canvas
 | BRY | `root` | y position of the bottom right corner of the virtual canvas
-| shutter | `root` | works like `src` for the shutter image
+| mask | `root` | works like `src` for the masking image
 
 ### note on playback
 

@@ -5,8 +5,8 @@ uniform lowp int u_mode;
 uniform float u_opacity;
 
 #ifdef ENABLE_TRANSFORM
-uniform sampler2D u_shutter;
-uniform lowp int u_shutterMode;
+uniform sampler2D u_mask;
+uniform lowp int u_maskMode;
 uniform sampler2D u_fbTex;
 uniform vec2 u_eTL;
 uniform vec2 u_eTR;
@@ -71,17 +71,17 @@ void main() {
         } else {
             gl_FragColor = texture2D(u_fbTex, texPix);
             float alpha = 1.;
-            //shutterMode == 0 //disable shutter
-            if (u_shutterMode == 1) { //red
-                alpha = texture2D(u_shutter, v_texturePos).r;
-            } else if (u_shutterMode == 2) { //green
-                alpha = texture2D(u_shutter, v_texturePos).g;
-            } else if (u_shutterMode == 3) { //blue
-                alpha = texture2D(u_shutter, v_texturePos).b;
-            } else if (u_shutterMode == 4) { //alpha
-                alpha = texture2D(u_shutter, v_texturePos).a;
+            //maskMode == 0 //disable mask
+            if (u_maskMode == 1) { //red
+                alpha = texture2D(u_mask, v_texturePos).r;
+            } else if (u_maskMode == 2) { //green
+                alpha = texture2D(u_mask, v_texturePos).g;
+            } else if (u_maskMode == 3) { //blue
+                alpha = texture2D(u_mask, v_texturePos).b;
+            } else if (u_maskMode == 4) { //alpha
+                alpha = texture2D(u_mask, v_texturePos).a;
             }
-#ifdef SHUTTER_STAIRS
+#ifdef MASK_STAIRS
             gl_FragColor.a = alpha > .5 ? 1. : 0.;
 #else
             gl_FragColor.a = alpha;
