@@ -3,6 +3,7 @@ function timeSinceAppStart() {
     return Date.now() - firstScriptTimestamp + "ms";
 }
 function init() {
+    log("[client] starting");
     initSocket();
     initGl();
 }
@@ -18,7 +19,7 @@ function hideInfos() {
 window.addEventListener("load", init);
 let totalTextures = 0;
 let loadingTextures = 0;
-let textureLoadIndicatorEnabled = false;
+let textureLoadIndicatorEnabled = true;
 function textureLoadIndicator(loaded) {
     if (loaded) {
         loadingTextures--;
@@ -29,10 +30,12 @@ function textureLoadIndicator(loaded) {
     }
     if (textureLoadIndicatorEnabled) {
         if (loadingTextures) {
-            updateStatus(`loading textures (${totalTextures - loadingTextures}/${totalTextures} loaded)`);
+            // updateStatus(`loading textures (${totalTextures - loadingTextures}/${totalTextures} loaded)`)
+            log(`[assets] ${totalTextures - loadingTextures} loaded; ${totalTextures} total;${loadingTextures} remaining`);
         }
         else {
-            updateStatus("ready");
+            // updateStatus("ready");
+            log(`[assets] loaded`);
             // $("#load-info").style.display = "none";
             // $("#info").style.display = "none";
         }
@@ -45,5 +48,16 @@ function updateStatus(status, color = "default") {
     statusEl.innerText = status;
     // keep also old colors
     statusEl.classList.add("state-" + color);
+}
+let logEl;
+function log(msg) {
+    if (!logEl)
+        logEl = document.getElementById("logs");
+    if (logEl) {
+        logEl.innerText += "\n" + msg;
+    }
+    else {
+        console.log(msg);
+    }
 }
 //# sourceMappingURL=output.js.map

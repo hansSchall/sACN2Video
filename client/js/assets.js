@@ -2,8 +2,9 @@
 async function loadAssets(additional = []) {
     const uiEl = $("#files");
     uiEl.innerText = "indexing assets";
+    log("[assets] indexing");
     const reqs = [
-        ...(await (await fetch("/assets")).json()).filter(_ => (_.enabled ?? true) && _.id != "video0_").map(_ => ({
+        ...(await (await fetch("/assets")).json()).filter(_ => (_.enabled ?? true)).map(_ => ({
             url: "/assets/" + _.id,
             id: _.id,
             label: _.label,
@@ -17,14 +18,20 @@ async function loadAssets(additional = []) {
     loading += reqs.length;
     reqs.forEach(file => {
         const el = $el();
+        log(`[assets] file = '${file.label}'
+>> path = '${file.url}'
+>> size = ${typeof file.size == "number" ? file.size + "bytes" : file.size}
+>> mime = ${file.mime}) `);
         el.innerText = `'${file.label}': path='${file.url}'; size=${typeof file.size == "number" ? file.size + "bytes" : file.size}; mime=${file.mime})`;
         uiEl.appendChild(el);
         fetch(file.url).then(res => {
             if (res.ok) {
-                el.innerText += " res_ok";
+                log(`[t${timeSinceAppStart()}] [assets] [response] of '${file.label}'`);
+                el.innerText += " [response]";
                 console.log(`%c [${timeSinceAppStart()}] reponse ${file.id}`, "color: #0f0");
                 function loaded() {
-                    el.innerText += " parsed";
+                    el.innerText += " [parsed]";
+                    log(`[t${timeSinceAppStart()}] [assets] [data]     of '${file.label}'`);
                     el.classList.add("ok");
                     loading--;
                     checkLoadState();

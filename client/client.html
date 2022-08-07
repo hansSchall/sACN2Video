@@ -10,7 +10,7 @@
             const flags = {
                 transform: true,
                 clockPrescaler: 2,
-                overlayVerbose: 0
+                overlayVerbose: 2
             }
         </script>
         <style>
@@ -65,6 +65,9 @@
             #files .failed{
                 color: var(--error);
             }
+            #logs{
+                font-family: "Source Code Pro", monospace;
+            }
             .hidden{
                 display: none !important;
             }
@@ -77,9 +80,12 @@
             <div id="status-el"></div>
         </div>
         <div id="load-info">
-            <div id="files">
+            <div id="files" class="hidden">
                 loading ...
             </div>
+            <code id="logs">
+                [client] loading application
+            </code>
         </div>
     </body>
     <script src="./js/assets.js"></script>
