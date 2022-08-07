@@ -508,62 +508,7 @@ class AudioElmnt extends Elmnt {
         return 0;
     }
 }
-class Playback {
-    constructor(readonly el: HTMLMediaElement, protected readonly syncEnabled: number) {
-        if (syncEnabled) {
-            this.sync = new Sync(syncEnabled);
-            el.addEventListener("ended", () => {
-                console.log("ended event");
-                if (this.looping) {
-                    this.el.currentTime = 0;
-                    this.el.play();
-                    this.sync?.restartTC();
-                }
-            })
-        }
-    }
-    protected readonly sync?: Sync;
-    protected playing: boolean = false;
-    protected looping: boolean = false;
-    protected beginning: boolean = false;
-    updatePB(play: boolean, loop: boolean, begin: boolean) {
-        if (!play && (begin || loop)) return; //invalid
-        let anythingCanged = false;
-        if (play != this.playing) {
-            if (play) {
-                this.el.play();
-            } else {
-                this.el.pause();
-            }
-            this.playing = play;
-            anythingCanged = true;
-        }
-        if (loop != this.looping) {
-            this.looping = loop;
-            this.el.loop = false;
-            anythingCanged = true;
-        }
-        if (begin != this.beginning) {
-            this.beginning = begin;
-            anythingCanged = true;
-        }
-        if ((begin || this.el.ended) && anythingCanged) {
-            this.el.currentTime = 0;
-            this.el.play();
-        }
-        if (anythingCanged) console.log(this);
 
-        if (!this.el.paused) {
-            this.sync?.startTC?.(this.el.currentTime);
-        } else {
-            this.sync?.stopTC?.();
-        }
-    }
-    parsePBState(value: number) {
-        value = Math.floor(value / 10);
-        this.updatePB(...pbMapping[value] || [false, true, true]);
-    }
-}
 const pbMapping: [boolean, boolean, boolean][] = [
     [false, true, true], //0
     [false, false, false], //1 pause
