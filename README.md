@@ -4,9 +4,7 @@
 Renders Images, Videos, etc. controlled by sACN data onto a video projector.
 Special transformation functions to match the projection surface's geomety are included (corner pin transformation and overlay image).
 
-**documentation not finished yet**
-
-If you want to use it, feel free to ask everything.
+If you have questions how to use it, feel free to ask everything. Create an issue and add the `docs-question` label.
 
 ## How does it work ?
 
