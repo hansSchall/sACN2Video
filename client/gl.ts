@@ -1,5 +1,5 @@
 let gl: WebGLRenderingContext | undefined;
-const frameBufferSize = [window.screen.height, window.screen.width];
+let frameBufferSize = [window.screen.height, window.screen.width];
 
 function undefinedMsg<T>(fnVal: T | undefined | null, msg: string): T {
     if (!fnVal) {
@@ -45,6 +45,7 @@ function createProgram(gl: WebGLRenderingContext, vertexShader: WebGLShader, fra
     console.log(gl.getProgramInfoLog(program));
     gl.deleteProgram(program);
 }
+
 function compileShader(vertexCode: string, fragmentCode: string) {
     if (!gl) {
         throw new Error("WebGLContext is undefined");
@@ -72,6 +73,16 @@ function resizeCanvasToDisplaySize(canvas: HTMLCanvasElement, gl: WebGLRendering
     return needResize;
 }
 
+function setFBsize({ h, w }: { h?: number, w?: number }) {
+    if (!gl) {
+        throw new Error("WebGLContext is undefined");
+    }
+    if (h !== undefined) frameBufferSize[0] = h;
+    if (w !== undefined) frameBufferSize[1] = w;
+    gl.bindTexture(gl.TEXTURE_2D, lg.fbTex);
+    gl.texImage2D(gl.TEXTURE_2D, 0, gl.RGBA, frameBufferSize[1], frameBufferSize[0], 0, gl.RGBA, gl.UNSIGNED_BYTE, null);
+}
+
 let renderTime: number[] = [];
 let renderLoop = true;
 let fps = 0;
@@ -96,6 +107,14 @@ const transformProps: TransformProps = [
     vec2(0, 1),
     vec2(1, 1)
 ]
+
+function int(val: string | number) {
+    if (typeof val == "number") {
+        return val;
+    } else {
+        return parseInt(val);
+    }
+}
 
 async function initGl() {
     console.log(`%c [${timeSinceAppStart()}] starting init`, "color: #0ff");
@@ -147,6 +166,7 @@ async function initGl() {
     }
 
     gl.bindTexture(gl.TEXTURE_2D, lg.fbTex);
+    // gl.texImage2D(gl.TEXTURE_2D, 0, gl.RGBA, 100, 50, 0, gl.RGBA, gl.UNSIGNED_BYTE, null);
     gl.texImage2D(gl.TEXTURE_2D, 0, gl.RGBA, frameBufferSize[1], frameBufferSize[0], 0, gl.RGBA, gl.UNSIGNED_BYTE, null);
     gl.texParameteri(gl.TEXTURE_2D, gl.TEXTURE_MIN_FILTER, gl.LINEAR);
     gl.texParameteri(gl.TEXTURE_2D, gl.TEXTURE_WRAP_S, gl.CLAMP_TO_EDGE);
@@ -605,30 +625,36 @@ async function loadElmnts() {
                         updatePars(par: string, value: string | number, sacn?: boolean): void {
                             const corner = par.slice(0, 2);
                             const coord = par.slice(2);
-                            if (corner.length == 2 && coord.length == 1) {
+                            if (/^(T|B)(L|R)(X|Y)$/.test(par) && corner.length == 2 && coord.length == 1) {
                                 transformProps
                                 [tranformCorner(corner) ?? 0]
                                 [coord == "X" ? 0 : 1] =
                                     parseFloat(value as string);
-                            } else {
-                                if (par == "mask") {
-                                    textureLoadIndicator(false);
-                                    const img = new Image();
-                                    img.src = assets.get(value.toString()) ?? "";
-                                    useMask = true;
-                                    img.addEventListener("load", () => {
-                                        if (!gl) {
-                                            throw new Error("WebGLContext is undefined");
-                                        }
-                                        gl.bindTexture(gl.TEXTURE_2D, lg.maskTex);
-                                        gl.texImage2D(gl.TEXTURE_2D, 0, gl.RGBA, gl.RGBA, gl.UNSIGNED_BYTE, img);
-                                        gl.texParameteri(gl.TEXTURE_2D, gl.TEXTURE_WRAP_S, gl.CLAMP_TO_EDGE);
-                                        gl.texParameteri(gl.TEXTURE_2D, gl.TEXTURE_WRAP_T, gl.CLAMP_TO_EDGE);
-                                        gl.texParameteri(gl.TEXTURE_2D, gl.TEXTURE_MIN_FILTER, gl.LINEAR);
-                                        console.log(`%c [${timeSinceAppStart()}] mounted mask`, "color: #0f0");
-                                        textureLoadIndicator(true);
-                                    })
-                                }
+                            } else if (par == "mask") {
+                                textureLoadIndicator(false);
+                                const img = new Image();
+                                img.src = assets.get(value.toString()) ?? "";
+                                useMask = true;
+                                img.addEventListener("load", () => {
+                                    if (!gl) {
+                                        throw new Error("WebGLContext is undefined");
+                                    }
+                                    gl.bindTexture(gl.TEXTURE_2D, lg.maskTex);
+                                    gl.texImage2D(gl.TEXTURE_2D, 0, gl.RGBA, gl.RGBA, gl.UNSIGNED_BYTE, img);
+                                    gl.texParameteri(gl.TEXTURE_2D, gl.TEXTURE_WRAP_S, gl.CLAMP_TO_EDGE);
+                                    gl.texParameteri(gl.TEXTURE_2D, gl.TEXTURE_WRAP_T, gl.CLAMP_TO_EDGE);
+                                    gl.texParameteri(gl.TEXTURE_2D, gl.TEXTURE_MIN_FILTER, gl.LINEAR);
+                                    console.log(`%c [${timeSinceAppStart()}] mounted mask`, "color: #0f0");
+                                    textureLoadIndicator(true);
+                                })
+                            } else if (par == "fbH") {
+                                setFBsize({
+                                    h: int(value)
+                                })
+                            } else if (par == "fbW") {
+                                setFBsize({
+                                    w: int(value)
+                                })
                             }
                         }
                     }

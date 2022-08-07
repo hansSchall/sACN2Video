@@ -99,6 +99,8 @@ Note: to apply changes you need to restart the whole server, not only the client
 | BRX | `root` | x position of the bottom right corner of the virtual canvas
 | BRY | `root` | y position of the bottom right corner of the virtual canvas
 | mask | `root` | works like `src` for the masking image
+| fbH | `root` | height of framebuffer in px
+| fbW | `root` | width of framebuffer in px
 
 ### note on playback
 
