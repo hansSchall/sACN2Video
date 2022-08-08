@@ -69,3 +69,34 @@ function resizeCanvasToDisplaySize(canvas: HTMLCanvasElement, gl: WebGLRendering
     gl.viewport(0, 0, gl.canvas.width, gl.canvas.height);
     return needResize;
 }
+
+function vec2(x: number, y: number): vec2 {
+    return [x, y];
+}
+type vec2 = [number, number];
+type TransformProps = [vec2, vec2, vec2, vec2];
+const transformProps: TransformProps = [
+    vec2(0, 0),
+    vec2(1, 0),
+    vec2(0, 1),
+    vec2(1, 1)
+]
+
+function int(val: string | number) {
+    if (typeof val == "number") {
+        return val;
+    } else {
+        return parseInt(val);
+    }
+}
+
+type Pos = {
+    x: number,
+    y: number,
+    h: number,
+    w: number
+}
+
+function Pos2Buffer({ x, y, h, w }: Pos) {
+    return new Float32Array([x, y, x + w, y, x + w, y + h, x, y, x, y + h, x + w, y + h]);
+}
