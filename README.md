@@ -1,7 +1,9 @@
 # sACN2Video2
 2nd major release of sACN2Video (complete rewrite)
 
-![Contribution welcome](https://img.shields.io/badge/contribution-welcome-green)
+![Contribution welcome](https://img.shields.io/badge/contribution-welcome-green?style=for-the-badge)
+![GitHub](https://img.shields.io/github/license/hansschall/sacn2video2?style=for-the-badge)
+![GitHub top language](https://img.shields.io/github/languages/top/hansSchall/sacn2video2?logo=typescript&style=for-the-badge)
 
 Renders Images, Videos, etc. controlled by sACN data onto a video projector.
 Special transformation functions to match the projection surface's geomety are included (corner pin transformation and overlay image).
