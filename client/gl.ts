@@ -118,12 +118,12 @@ function int(val: string | number) {
 
 async function initGl() {
     console.log(`%c [${timeSinceAppStart()}] starting init`, "color: #0ff");
-    log("[gl.ts] creating WebGL context");
+    log_TODO_MIGRATE("[gl.ts] creating WebGL context");
     fpsEl = $("#fps");
     const canvas = $<HTMLCanvasElement>("#c");
     gl = canvas.getContext("webgl2") || undefined;
     if (!gl) {
-        log("[FATAL ERROR] WebGL not supported");
+        log_TODO_MIGRATE("[FATAL ERROR] WebGL not supported");
         updateStatus("[ERROR] WebGL not supported", "error");
         throw new Error("no WebGL");
     }
@@ -133,7 +133,7 @@ async function initGl() {
     resizeCanvasToDisplaySize(canvas, gl)
     console.log(`%c [${timeSinceAppStart()}] √ created WebGL context`, "color: #0f0")
     updateStatus("loading shaders");
-    log("[gl.ts] [loading] shaders");
+    log_TODO_MIGRATE("[gl.ts] [loading] shaders");
     await getShaderCode();
     const fragmentCode = [
         "precision lowp float;",
@@ -147,13 +147,13 @@ async function initGl() {
     gl.useProgram(program);
     console.log(`%c [${timeSinceAppStart()}] √ created WebGL shaders`, "color: #0f0")
     updateStatus("initializing");
-    log("[gl.ts] [initializing] WebGL");
-    log("[gl.ts] [initializing] WebGL.uniforms");
+    log_TODO_MIGRATE("[gl.ts] [initializing] WebGL");
+    log_TODO_MIGRATE("[gl.ts] [initializing] WebGL.uniforms");
     ["u_texture", "u_fbTex", "u_mask", "u_mode", "u_maskMode", "u_opacity", "u_eTL", "u_eTR", "u_eBL", "u_eBR"]
         .forEach(uname => uniforms.set(uname, undefinedMsg(gl?.getUniformLocation(program, uname), "failed to resolve uniform")));
-    log("[gl.ts] [initializing] WebGL.attributes");
-    log("[gl.ts] [initializing] WebGL.buffers");
-    log("[gl.ts] [initializing] WebGL.textures");
+    log_TODO_MIGRATE("[gl.ts] [initializing] WebGL.attributes");
+    log_TODO_MIGRATE("[gl.ts] [initializing] WebGL.buffers");
+    log_TODO_MIGRATE("[gl.ts] [initializing] WebGL.textures");
     lg = {
         objPosLoc: gl.getAttribLocation(program, "a_objectPos"),
         texPosLoc: gl.getAttribLocation(program, "a_texturePos"),
@@ -198,7 +198,7 @@ async function initGl() {
     gl.enableVertexAttribArray(lg.texPosLoc);
     gl.bufferData(gl.ARRAY_BUFFER, new Float32Array([0, 0, 1, 0, 1, 1, 0, 0, 0, 1, 1, 1]), gl.STATIC_DRAW);
     updateStatus("loading components")
-    log("[gl.ts] [initializing] elements");
+    log_TODO_MIGRATE("[gl.ts] [initializing] elements");
     loadElmnts().then(() => {
         requestAnimationFrame(render);
         updateStatus("ready");

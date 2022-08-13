@@ -56,6 +56,9 @@ export async function main() {
                 res.end(config);
             });
         })
+        app.get("/report-to", (req, res) => {
+            res.end(dbFile);
+        })
         if (callOptions?.editor) {
             const mod = await import("./editor-backend/editor-backend.js")
             mod.initEditor(db);

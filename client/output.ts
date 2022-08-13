@@ -2,7 +2,7 @@ function timeSinceAppStart() {
     return Date.now() - firstScriptTimestamp + "ms";
 }
 function init() {
-    log("[client] starting")
+    log_TODO_MIGRATE("[client] starting")
     initSocket();
     initGl();
 }
@@ -30,10 +30,10 @@ function textureLoadIndicator(loaded: boolean) {
     if (textureLoadIndicatorEnabled) {
         if (loadingTextures) {
             // updateStatus(`loading textures (${totalTextures - loadingTextures}/${totalTextures} loaded)`)
-            log(`[assets] ${totalTextures - loadingTextures} loaded; ${totalTextures} total;${loadingTextures} remaining`)
+            log_TODO_MIGRATE(`[assets] ${totalTextures - loadingTextures} loaded; ${totalTextures} total;${loadingTextures} remaining`)
         } else {
             // updateStatus("ready");
-            log(`[assets] loaded`);
+            log_TODO_MIGRATE(`[assets] loaded`);
             // $("#load-info").style.display = "none";
             // $("#info").style.display = "none";
         }
@@ -49,7 +49,7 @@ function updateStatus(status: string, color: string = "default") {
 }
 
 let logEl: HTMLElement | null;
-function log(msg: string) {
+function log_TODO_MIGRATE(msg: string) {
     if (!logEl) logEl = document.getElementById("logs");
     if (logEl) {
         logEl.innerText += "\n" + msg;
