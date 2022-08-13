@@ -1,7 +1,11 @@
-export class Logserver {
-    constructor(readonly server: URL, readonly target: string) {
+class Logserver {
+    protected server: URL = new URL(location.href);
+    protected target: string = "client (unconfigured)";
+    public start(server: URL, target: string) {
         server.pathname = "/reporter";
         server.protocol = "ws://";
+        this.server = server;
+        this.target = target;
         this.connectWs();
     }
     protected ws: WebSocket | undefined;
@@ -30,8 +34,9 @@ export class Logserver {
 
     }
     log(msg: string[] | string, type: string | "Log" | "Info" | "Warn" | "Error" = "Log") {
+        const msgData = joincomma(["log", this.target, ...timestamp(), type, ...(typeof msg == "string" ? [msg] : msg)]);
         this.sendLock().then(() => {
-            this.ws?.send(joincomma(["log", this.target, ...timestamp(), type, ...(typeof msg == "string" ? [msg] : msg)]))
+            this.ws?.send(msgData);
         })
     }
 }

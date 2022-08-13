@@ -1,6 +1,7 @@
 function timeSinceAppStart() {
     return Date.now() - firstScriptTimestamp + "ms";
 }
+const logserver = new Logserver();
 function init() {
     log_TODO_MIGRATE("[client] starting")
     initSocket();
