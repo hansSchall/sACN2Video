@@ -114,14 +114,23 @@ abstract class Elmnt {
             }
         }
 
+        const updateValue = (value: number | string, dyn: boolean = false) => {
+            this.updatePars(name, (valueMapping || (_ => _))(value), dyn);
+        }
+
+        let valueMapping: ((val: string | number) => string | number) | undefined;
+
         if (type.startsWith("static")) {
             if (type == "staticcp") {
-                this.updatePars(name, (parseFloat(value) + 1) / 2, false);
+                if (!valueMapping) valueMapping = val => (parseFloat(val as string) + 1) / 2
+                // this.updatePars(name, (parseFloat(value) + 1) / 2, false);
             } else if (type == "staticpcp") {
-                this.updatePars(name, (parseFloat(value) + 100) / 200, false);
+                if (!valueMapping) valueMapping = val => (parseFloat(val as string) + 100) / 200
+                // this.updatePars(name, (parseFloat(value) + 100) / 200, false);
             } else {
-                this.updatePars(name, value, false);
+                // this.updatePars(name, value, false);
             }
+            updateValue(value);
         } else if (type == "sacn") {
             const rawaddr = value.split(/(\/|\+|\,|\.|\\)/).map(_ => parseInt(_)).filter(_ => !isNaN(_));
             let addr: number | [number, number]
@@ -143,16 +152,16 @@ abstract class Elmnt {
                 });
             } else { // 16
                 let valuelow = 0, valuehi = 0;
-                const updateValue = (() => {
-                    this.updatePars(name, ((valuehi << 8) + valuelow) / 65535, true);
+                const compute16bValue = (() => {
+                    updateValue(((valuehi << 8) + valuelow) / 65535, true);
                 }).bind(this);
                 addSacnListener(addr[0], value => {
                     valuelow = value;
-                    updateValue();
+                    compute16bValue();
                 });
                 addSacnListener(addr[1], value => {
                     valuehi = value;
-                    updateValue();
+                    compute16bValue();
                 });
             }
         } else {
