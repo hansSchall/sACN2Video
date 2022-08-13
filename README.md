@@ -1,6 +1,8 @@
 # sACN2Video2
 2nd major release of sACN2Video (complete rewrite)
 
+![Contribution welcome](https://img.shields.io/badge/contribution-welcome-green)
+
 Renders Images, Videos, etc. controlled by sACN data onto a video projector.
 Special transformation functions to match the projection surface's geomety are included (corner pin transformation and overlay image).
 
@@ -27,8 +29,6 @@ background for ...
 - theatre productions
 - art projects
 - shows of any type
-
-**``>>Contribution welcome<<``**
 
 ## Installation
 
