@@ -21,16 +21,22 @@ async function loadAssets(additional: FileReq[] = []) {
 >> path = '${file.url}'
 >> size = ${typeof file.size == "number" ? file.size + "bytes" : file.size}
 >> mime = ${file.mime}) `);
+
+        log(["assets", "loader", "details", `file: ${file.label}`, `path: '${file.url}'; size: ${typeof file.size == "number" ? file.size + "bytes" : file.size}; mime: ${file.mime}`])
+
         el.innerText = `'${file.label}': path='${file.url}'; size=${typeof file.size == "number" ? file.size + "bytes" : file.size}; mime=${file.mime})`
+
         uiEl.appendChild(el);
         fetch(file.url).then(res => {
             if (res.ok) {
-                log_TODO_MIGRATE(`[t${timeSinceAppStart()}] [assets] [response] of '${file.label}'`);
+                // log_TODO_MIGRATE(`[t${timeSinceAppStart()}] [assets] [response] of '${file.label}'`);
+                log(["assets", "loader", "details", `file: ${file.label}`, `response`])
                 el.innerText += " [response]";
                 console.log(`%c [${timeSinceAppStart()}] reponse ${file.id}`, "color: #0f0");
                 function loaded() {
                     el.innerText += " [parsed]";
-                    log_TODO_MIGRATE(`[t${timeSinceAppStart()}] [assets] [data]     of '${file.label}'`);
+                    // log_TODO_MIGRATE(`[t${timeSinceAppStart()}] [assets] [data]     of '${file.label}'`);
+                    log(["assets", "loader", "details", `file: ${file.label}`, `data`])
                     el.classList.add("ok");
                     loading--;
                     checkLoadState();
@@ -38,15 +44,18 @@ async function loadAssets(additional: FileReq[] = []) {
                 if (file.objectURL) {
                     res.blob().then(_ => URL.createObjectURL(_)).then(_ => assets.set(file.id, _)).then(() => loaded()).catch(err => {
                         console.error("Response parsing failed")
+                        log(["assets", "loader", "details", `file: ${file.label}`, `parsing failed`], "Error")
                     })
                 } else {
                     res.text().then(_ => assets.set(file.id, _)).then(() => loaded()).catch(err => {
                         console.error("Response parsing failed")
+                        log(["assets", "loader", "details", `file: ${file.label}`, `parsing failed`], "Error")
                     })
                 }
             } else {
                 el.innerText += " Failed"
                 el.classList.add("failed");
+                log(["assets", "loader", "details", `file: ${file.label}`, `request failed`], "Error")
                 loading--;
                 checkLoadState();
             }
