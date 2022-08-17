@@ -10,7 +10,6 @@ class Logserver {
     }
     protected ws: WebSocket | undefined;
     protected connectWs() {
-        debugger;
         this.ws = new WebSocket(this.server);
         this.ws.addEventListener("open", this.onOpen.bind(this));
         this.ws.addEventListener("close", this.onClose.bind(this));

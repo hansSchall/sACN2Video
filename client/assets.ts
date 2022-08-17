@@ -81,7 +81,7 @@ interface FileReq {
     mime: string
 }
 const assets = new Map<string, string>();
-window.addEventListener("load", () => {
+function initAssets() {
     const reqs: FileReq[] = ["vertex", "fragment"].map(_ => ({
         url: `/client/shaders/${_}.shader`,
         id: `${_}.shader`,
@@ -96,7 +96,7 @@ window.addEventListener("load", () => {
     ]).then(() => {
         shaderCode();
     })
-});
+}
 
 let shaderCode: () => void;
 
