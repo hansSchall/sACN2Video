@@ -17,6 +17,7 @@ import { initSocket } from "./src/socket.js";
 import expressWs from "express-ws";
 import { clientConfig } from "./src/clientConfig.js";
 import { initOSC } from "./src/osc";
+import { joincomma } from "./src/utils";
 // import { join } from "path";
 
 export async function main() {
@@ -56,8 +57,16 @@ export async function main() {
                 res.end(config);
             });
         })
-        app.get("/report-to", (req, res) => {
-            res.end(dbFile);
+        app.get("/report-to", async (req, res) => {
+            const serverName: string = "ws://" +
+                (
+                    (await db.get("SELECT value FROM config WHERE id = 'report-server'"))
+                        ?.value
+                    || "localhost:81"
+                )
+                + "/";
+
+            res.end(joincomma([serverName, dbFile]));
         })
         if (callOptions?.editor) {
             const mod = await import("./editor-backend/editor-backend.js")

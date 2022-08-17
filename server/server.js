@@ -47,6 +47,7 @@ const socket_js_1 = require("./src/socket.js");
 const express_ws_1 = __importDefault(require("express-ws"));
 const clientConfig_js_1 = require("./src/clientConfig.js");
 const osc_1 = require("./src/osc");
+const utils_1 = require("./src/utils");
 // import { join } from "path";
 async function main() {
     let dbFile_ = callOptions?.file || path.resolve(process.argv[2]);
@@ -77,6 +78,14 @@ async function main() {
             (0, clientConfig_js_1.clientConfig)().then(config => {
                 res.end(config);
             });
+        });
+        app.get("/report-to", async (req, res) => {
+            const serverName = "ws://" +
+                ((await db_js_1.db.get("SELECT value FROM config WHERE id = 'report-server'"))
+                    ?.value
+                    || "localhost:81")
+                + "/";
+            res.end((0, utils_1.joincomma)([serverName, exports.dbFile]));
         });
         if (callOptions?.editor) {
             const mod = await Promise.resolve().then(() => __importStar(require("./editor-backend/editor-backend.js")));

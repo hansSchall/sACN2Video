@@ -10,6 +10,7 @@ class Logserver {
     }
     protected ws: WebSocket | undefined;
     protected connectWs() {
+        debugger;
         this.ws = new WebSocket(this.server);
         this.ws.addEventListener("open", this.onOpen.bind(this));
         this.ws.addEventListener("close", this.onClose.bind(this));
@@ -34,9 +35,9 @@ class Logserver {
 
     }
     log(msg: string[] | string, type: string | "Log" | "Info" | "Warn" | "Error" = "Log") {
-        const msgData = joincomma(["log", this.target, ...timestamp(), type, ...(typeof msg == "string" ? [msg] : msg)]);
+        const ts = timestamp();
         this.sendLock().then(() => {
-            this.ws?.send(msgData);
+            this.ws?.send(joincomma(["log", this.target, ...ts, type, ...(typeof msg == "string" ? [msg] : msg)]));
         })
     }
 }
@@ -47,6 +48,10 @@ function splitcomma(joined: string) {
 
 function joincomma(splitted: string[]) {
     return splitted.map(_ => _.replace(/\\/g, "\\\\").replace(/,/g, "\\,")).join(",");
+}
+
+function log(msg: string[] | string, type: "Log" | "Info" | "Warn" | "Error" = "Log") {
+    logserver.log(msg, type);
 }
 
 const format = new Intl.DateTimeFormat("de-de", {

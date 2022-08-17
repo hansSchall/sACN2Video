@@ -4,8 +4,19 @@ function timeSinceAppStart() {
 const logserver = new Logserver();
 function init() {
     log_TODO_MIGRATE("[client] starting")
+    log(["client", "starting"]);
     initSocket();
     initGl();
+    const fURL = new URL(location.href);
+    fURL.pathname = "/report-to"
+    fetch(fURL).then(res => {
+        if (res.ok) {
+            res.text().then(cont => {
+                const [serverName, reporterName] = splitcomma(cont);
+                logserver.start(new URL(serverName), reporterName);
+            })
+        }
+    })
 }
 function hideInfos() {
     switch (flags.overlayVerbose) {
@@ -32,9 +43,11 @@ function textureLoadIndicator(loaded: boolean) {
         if (loadingTextures) {
             // updateStatus(`loading textures (${totalTextures - loadingTextures}/${totalTextures} loaded)`)
             log_TODO_MIGRATE(`[assets] ${totalTextures - loadingTextures} loaded; ${totalTextures} total;${loadingTextures} remaining`)
+            log(["Assets", "Loader", "#detail", `${totalTextures - loadingTextures} loaded; ${totalTextures} total;${loadingTextures} remaining`], "Info")
         } else {
             // updateStatus("ready");
             log_TODO_MIGRATE(`[assets] loaded`);
+            log(["Assets", "Loader", "loaded"])
             // $("#load-info").style.display = "none";
             // $("#info").style.display = "none";
         }
