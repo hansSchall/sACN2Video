@@ -1,7 +1,7 @@
 async function loadAssets(additional: FileReq[] = []) {
     const uiEl = $("#files");
     uiEl.innerText = "indexing assets";
-    log("[assets] indexing")
+    log_TODO_MIGRATE("[assets] indexing")
     const reqs: FileReq[] = [
         ...((await (await fetch("/assets")).json()) as any[]).filter(_ => (_.enabled ?? true)).map(_ => ({
             url: "/assets/" + _.id,
@@ -17,7 +17,7 @@ async function loadAssets(additional: FileReq[] = []) {
     loading += reqs.length;
     reqs.forEach(file => {
         const el = $el();
-        log(`[assets] file = '${file.label}'
+        log_TODO_MIGRATE(`[assets] file = '${file.label}'
 >> path = '${file.url}'
 >> size = ${typeof file.size == "number" ? file.size + "bytes" : file.size}
 >> mime = ${file.mime}) `);
@@ -25,12 +25,12 @@ async function loadAssets(additional: FileReq[] = []) {
         uiEl.appendChild(el);
         fetch(file.url).then(res => {
             if (res.ok) {
-                log(`[t${timeSinceAppStart()}] [assets] [response] of '${file.label}'`);
+                log_TODO_MIGRATE(`[t${timeSinceAppStart()}] [assets] [response] of '${file.label}'`);
                 el.innerText += " [response]";
                 console.log(`%c [${timeSinceAppStart()}] reponse ${file.id}`, "color: #0f0");
                 function loaded() {
                     el.innerText += " [parsed]";
-                    log(`[t${timeSinceAppStart()}] [assets] [data]     of '${file.label}'`);
+                    log_TODO_MIGRATE(`[t${timeSinceAppStart()}] [assets] [data]     of '${file.label}'`);
                     el.classList.add("ok");
                     loading--;
                     checkLoadState();
