@@ -60,9 +60,7 @@ type Prop = [string, string, string];
 const elmnts = new Set<Elmnt>();
 abstract class Elmnt {
     constructor(readonly id: string) {
-        if (!gl) {
-            throw new Error("WebGLContext is undefined");
-        }
+        const gl = getGLcontext();
         this.tex = undefinedMsg(gl.createTexture(), "texture creation failed");
         gl.bindTexture(gl.TEXTURE_2D, this.tex);
         gl.texParameteri(gl.TEXTURE_2D, gl.TEXTURE_WRAP_S, gl.CLAMP_TO_EDGE);
@@ -75,11 +73,13 @@ abstract class Elmnt {
         return this.opacity;
     }
     protected opacity: number = 0;
-    bindTex(bindPoint: number = gl?.TEXTURE_2D || 0) {
-        gl?.bindTexture(bindPoint, this.tex);
+    bindTex(bindPoint: number = glCtx?.TEXTURE_2D || 0) {
+        const gl = getGLcontext();
+        gl.bindTexture(bindPoint, this.tex);
     }
     bufferPos() {
-        gl?.bufferData(gl.ARRAY_BUFFER, Pos2Buffer(this.pos), gl.DYNAMIC_DRAW);
+        const gl = getGLcontext();
+        gl.bufferData(gl.ARRAY_BUFFER, Pos2Buffer(this.pos), gl.DYNAMIC_DRAW);
     }
     pos: Pos = { x: 0, y: 0, h: 1, w: 1 };
     updatePars(par: string, value: string | number, sacn?: boolean): void {

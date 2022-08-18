@@ -19,9 +19,7 @@ class AudioElmnt extends Elmnt {
     bindTex(bindPoint?: number): void {
         super.bindTex(bindPoint);
         if (!this.loaded) return;
-        if (!gl) {
-            throw new Error("WebGLContext is undefined");
-        }
+        const gl = getGLcontext();
         gl.texImage2D(gl.TEXTURE_2D, 0, gl.RGBA, gl.RGBA, gl.UNSIGNED_BYTE, this.audio);
     }
     updatePars(par: string, value: string | number, sacn?: boolean): void {

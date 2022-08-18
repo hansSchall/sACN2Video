@@ -1,9 +1,7 @@
 class VideoElmnt extends Elmnt {
     constructor(id: string, props: Prop[]) {
         super(id);
-        if (!gl) {
-            throw new Error("WebGLContext is undefined");
-        }
+        const gl = getGLcontext();
         gl.bufferData(gl.ARRAY_BUFFER, new Float32Array([0, 0, 1, 0, 1, 1, 0, 0, 0, 1, 1, 1]), gl.STATIC_DRAW);
         this.video = document.createElement("video");
         this.video.addEventListener('playing', () => {
@@ -23,9 +21,7 @@ class VideoElmnt extends Elmnt {
     bindTex(bindPoint?: number): void {
         super.bindTex(bindPoint);
         if (!this.loaded) return;
-        if (!gl) {
-            throw new Error("WebGLContext is undefined");
-        }
+        const gl = getGLcontext();
         gl.texImage2D(gl.TEXTURE_2D, 0, gl.RGBA, gl.RGBA, gl.UNSIGNED_BYTE, this.video);
     }
     updatePars(par: string, value: string | number, sacn?: boolean): void {

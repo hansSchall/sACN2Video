@@ -1,10 +1,8 @@
-let gl: WebGLRenderingContext | undefined;
+let glCtx: WebGLRenderingContext | undefined;
 let frameBufferSize = [window.screen.height, window.screen.width];
 
 function setFBsize({ h, w }: { h?: number, w?: number }) {
-    if (!gl) {
-        throw new Error("WebGLContext is undefined");
-    }
+    const gl = getGLcontext();
     if (h !== undefined) frameBufferSize[0] = h;
     if (w !== undefined) frameBufferSize[1] = w;
     gl.bindTexture(gl.TEXTURE_2D, lg.fbTex);
@@ -29,12 +27,20 @@ async function initGl() {
     log_TODO_MIGRATE("[gl.ts] creating WebGL context");
     fpsEl = $("#fps");
     const canvas = $<HTMLCanvasElement>("#c");
-    gl = canvas.getContext("webgl2") || undefined;
-    if (!gl) {
+
+    if (!canvas) {
+        throw new Error("canvas element not found");
+    }
+
+    glCtx = canvas.getContext("webgl2") || undefined;
+    if (!glCtx) {
         log_TODO_MIGRATE("[FATAL ERROR] WebGL not supported");
         updateStatus("[ERROR] WebGL not supported", "error");
         throw new Error("no WebGL");
     }
+
+    const gl = getGLcontext();
+
     gl.enable(gl.BLEND);
     gl.blendFunc(gl.SRC_ALPHA, gl.ONE_MINUS_SRC_ALPHA);
     window.addEventListener("resize", () => gl && resizeCanvasToDisplaySize(canvas, gl));
@@ -129,9 +135,7 @@ let renderCycle = 0;
 const clockPrescaler = flags.clockPrescaler;
 
 function updateTransform(transformProps: TransformProps) {
-    if (!gl) {
-        throw new Error("WebGLContext is undefined");
-    }
+    const gl = getGLcontext();
     gl.uniform2f(getUniform("u_eTL"), ...transformProps[0]);
     gl.uniform2f(getUniform("u_eTR"), ...transformProps[1]);
     gl.uniform2f(getUniform("u_eBL"), ...transformProps[2]);
@@ -147,9 +151,7 @@ function render() {
         renderCycle = 0;
     }
     const startRender = performance.now();
-    if (!gl) {
-        throw new Error("WebGLContext is undefined");
-    }
+    const gl = getGLcontext();
     resizeCanvasToDisplaySize(gl.canvas, gl);
     updateTransform(transformProps);
     gl.activeTexture(gl.TEXTURE1);

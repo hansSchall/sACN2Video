@@ -1,9 +1,7 @@
 class ImgElmnt extends Elmnt {
     constructor(id: string, props: Prop[]) {
         super(id);
-        if (!gl) {
-            throw new Error("WebGLContext is undefined");
-        }
+        const gl = getGLcontext();
         gl.bufferData(gl.ARRAY_BUFFER, new Float32Array([0, 0, 1, 0, 1, 1, 0, 0, 0, 1, 1, 1]), gl.STATIC_DRAW);
         const img = new Image();
         img.src = assets.get(props.find(_ => _[0] == "src")?.[2] ?? "") ?? "";

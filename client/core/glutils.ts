@@ -6,6 +6,18 @@ function undefinedMsg<T>(fnVal: T | undefined | null, msg: string): T {
     }
 }
 
+function webGlundefined() {
+    return new Error("[unexpected] WebGLContext is undefined");
+}
+
+function getGLcontext(): WebGLRenderingContext {
+    if (glCtx) {
+        return glCtx;
+    } else {
+        throw webGlundefined();
+    }
+}
+
 function getUniform(name: string) {
     return undefinedMsg(uniforms.get(name), `'${name}' was not resolved during lookup`)
 }
@@ -44,9 +56,7 @@ function createProgram(gl: WebGLRenderingContext, vertexShader: WebGLShader, fra
 }
 
 function compileShader(vertexCode: string, fragmentCode: string) {
-    if (!gl) {
-        throw new Error("WebGLContext is undefined");
-    }
+    const gl = getGLcontext();
     const pr = createProgram(gl,
         createShader(gl, gl.VERTEX_SHADER, vertexCode),
         createShader(gl, gl.FRAGMENT_SHADER, fragmentCode));
