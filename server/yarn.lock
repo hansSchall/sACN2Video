@@ -877,10 +877,10 @@ node-gyp@8.x:
     tar "^6.1.2"
     which "^2.0.2"
 
-node-osc@^8.0.3:
-  version "8.0.3"
-  resolved "https://registry.yarnpkg.com/node-osc/-/node-osc-8.0.3.tgz#c343f037923251ead804b1e89a83295d6bc0c454"
-  integrity sha512-iDTt3QGV8MLEyvQzegUsVQM0MqWS5RJHhb+of8cmekF6aoQj0gAzvXW0PSdRduOnovUXDISti/fIsWAjnIwHRw==
+node-osc@^8.0.5:
+  version "8.0.5"
+  resolved "https://registry.yarnpkg.com/node-osc/-/node-osc-8.0.5.tgz#c3ebb1a9dd3a4deee4155b450bb5d2a75ec65714"
+  integrity sha512-6dZ4RUGEYu+JUaUgxKpJl5g3+9u+P6QPNn4g9j+jIcnQ5sDW+pgkIU2l1NRmnMu4y48jlBPskzpYbaXcVlhLsg==
   dependencies:
     osc-min "^1.1.1"
 
