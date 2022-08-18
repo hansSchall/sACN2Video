@@ -3,10 +3,13 @@ function timeSinceAppStart() {
 }
 const logserver = new Logserver();
 function init() {
-    log_TODO_MIGRATE("[client] starting")
     log(["client", "starting"]);
+    log(["client", "init", "flags", `#define TRANSFORM ${flags.transform ? "ENABLED" : "DISABLED"}`], "Info");
+    log(["client", "init", "flags", `#define CLOCK_PRESCALER ${flags.clockPrescaler}`], "Info");
+    log(["client", "init", "flags", `#define OVERLAY_VERBOSE ${flags.overlayVerbose}`], "Info");
+    initAssets();
     initSocket();
-    initGl();
+    initGl().catch(globalErrorHandler);
     const fURL = new URL(location.href);
     fURL.pathname = "/report-to"
     fetch(fURL).then(res => {
@@ -27,7 +30,42 @@ function hideInfos() {
             break;
     }
 }
-window.addEventListener("load", init);
+function globalErrorHandler(err: any) {
+    console.warn("Error");
+    console.warn(err);
+    if (err instanceof Error) {
+        log(["error", `${err.name} ${err.message} ${err.stack || ""}`], "Error");
+    }
+    else if (typeof err == "string") {
+        log(["error", err], "Error");
+    }
+    else if (err?.toString?.()) {
+        log(["error", err.toString()], "Error");
+    }
+    else {
+        console.warn("following error is not convertable into string:");
+        console.error(err);
+        log(["error", "cannot convert error to string"])
+    }
+}
+function globalOnError(ev: any) {
+    const err = ev as ErrorEvent | string;
+    console.error(err);
+    console.error("Error");
+    if (typeof err == "string")
+        log(["error", err], "Error");
+    else
+        log(["error", err.filename, `${err.message} ${err.lineno} ${err.colno}`], "Error")
+}
+window.onerror = globalOnError;
+window.addEventListener("load", () => {
+    try {
+        init();
+    } catch (err_) {
+        const err = err_ as any;
+        globalErrorHandler(err);
+    }
+});
 
 let totalTextures = 0;
 let loadingTextures = 0;
@@ -46,8 +84,7 @@ function textureLoadIndicator(loaded: boolean) {
             xdetail(["Assets", "Loader", "#detail", `${totalTextures - loadingTextures} loaded; ${totalTextures} total;${loadingTextures} remaining`], "Info")
         } else {
             // updateStatus("ready");
-            log_TODO_MIGRATE(`[assets] loaded`);
-            log(["Assets", "Loader", "loaded"])
+            // log(["Assets", "Loader", "loaded"])
             // $("#load-info").style.display = "none";
             // $("#info").style.display = "none";
         }

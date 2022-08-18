@@ -7,10 +7,12 @@
         <meta name="viewport" content="width=device-width, height=device-height, initial-scale=1">
         <script>
             const firstScriptTimestamp = Date.now();
+            const href = new URL(location.href);
+            
             const flags = {
                 transform: true,
-                clockPrescaler: 2,
-                overlayVerbose: 2
+                clockPrescaler: parseInt(href.searchParams.get("clock")) ?? 2,
+                overlayVerbose: parseInt(href.searchParams.get("verbose")) ?? 0
             }
         </script>
         <style>

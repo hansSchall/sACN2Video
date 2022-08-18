@@ -37,6 +37,7 @@ async function initGl() {
     if (!glCtx) {
         log_TODO_MIGRATE("[FATAL ERROR] WebGL not supported");
         updateStatus("[ERROR] WebGL not supported", "error");
+        log(["client", "gl.ts", "WebGL", "FatalError: WebGL not supported"], "Error");
         throw new Error("no WebGL");
     } else {
         xdetail("created WebGL context");
