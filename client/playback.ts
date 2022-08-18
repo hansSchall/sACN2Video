@@ -1,3 +1,12 @@
+const pbMapping: [boolean, boolean, boolean][] = [
+    [false, true, true], //0
+    [false, false, false], //1 pause
+    [true, false, false], //2 play
+    [true, false, true], //3 play begin
+    [true, true, false], //4 loop
+    [true, true, true], //5 loop begin
+]
+
 class Playback {
     constructor(readonly el: HTMLMediaElement, protected readonly syncEnabled: number) {
         if (syncEnabled) {

@@ -8,9 +8,7 @@
 Renders Images, Videos, etc. controlled by sACN data onto a video projector.
 Special transformation functions to match the projection surface's geomety are included (corner pin transformation and overlay image).
 
-If you have questions how to use it, feel free to ask everything. Create an issue and add the `docs-question` label.
-
-## How does it work ?
+If you have questions how to use it, feel free to ask everything. [Create a discussion with the `how to use/configure/...` label.](https://github.com/hansSchall/sACN2Video2/discussions/new?category=how-to-use-configure)
 
 - All the images and videos are rendered onto a virtual canvas.
 - The intensity/opacity, playback and position can be controlled via sACN

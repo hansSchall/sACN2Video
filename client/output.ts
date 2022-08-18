@@ -80,7 +80,8 @@ function textureLoadIndicator(loaded: boolean) {
     if (textureLoadIndicatorEnabled) {
         if (loadingTextures) {
             // updateStatus(`loading textures (${totalTextures - loadingTextures}/${totalTextures} loaded)`)
-            // log(["Assets", "Loader", "#detail", `${totalTextures - loadingTextures} loaded; ${totalTextures} total;${loadingTextures} remaining`], "Info")
+            log_TODO_MIGRATE(`[assets] ${totalTextures - loadingTextures} loaded; ${totalTextures} total;${loadingTextures} remaining`)
+            xdetail(["Assets", "Loader", "#detail", `${totalTextures - loadingTextures} loaded; ${totalTextures} total;${loadingTextures} remaining`], "Info")
         } else {
             // updateStatus("ready");
             // log(["Assets", "Loader", "loaded"])
