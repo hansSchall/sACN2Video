@@ -54,6 +54,10 @@ function log(msg: string[] | string, type: "Log" | "Info" | "Warn" | "Error" = "
     logserver.log(msg, type);
 }
 
+function xdetail(msg: string[] | string, type: "Log" | "Info" | "Warn" | "Error" = "Info") {
+    logserver.log(["extreme detailed log", ...msg], type);
+}
+
 const format = new Intl.DateTimeFormat("de-de", {
     hour: "2-digit",
     minute: "2-digit",

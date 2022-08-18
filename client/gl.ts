@@ -12,7 +12,7 @@ function setFBsize({ h, w }: { h?: number, w?: number }) {
 let renderTime: number[] = [];
 let renderLoop = true;
 let fps = 0;
-let fpsEl: HTMLElement;
+let fpsEl: HTMLElement | undefined;
 
 setInterval(() => {
     if (!fpsEl) return;
@@ -24,8 +24,9 @@ setInterval(() => {
 
 async function initGl() {
     console.log(`%c [${timeSinceAppStart()}] starting init`, "color: #0ff");
-    log_TODO_MIGRATE("[gl.ts] creating WebGL context");
+    xdetail(["gl.ts", "init"]);
     fpsEl = $("#fps");
+
     const canvas = $<HTMLCanvasElement>("#c");
 
     if (!canvas) {
@@ -37,17 +38,19 @@ async function initGl() {
         log_TODO_MIGRATE("[FATAL ERROR] WebGL not supported");
         updateStatus("[ERROR] WebGL not supported", "error");
         throw new Error("no WebGL");
+    } else {
+        xdetail("created WebGL context");
     }
 
     const gl = getGLcontext();
 
     gl.enable(gl.BLEND);
     gl.blendFunc(gl.SRC_ALPHA, gl.ONE_MINUS_SRC_ALPHA);
+
     window.addEventListener("resize", () => gl && resizeCanvasToDisplaySize(canvas, gl));
     resizeCanvasToDisplaySize(canvas, gl)
-    console.log(`%c [${timeSinceAppStart()}] √ created WebGL context`, "color: #0f0")
-    updateStatus("loading shaders");
-    log_TODO_MIGRATE("[gl.ts] [loading] shaders");
+
+    xdetail(["gl.ts", "shader", "loading"])
     await getShaderCode();
     const fragmentCode = [
         "precision lowp float;",
@@ -59,15 +62,13 @@ async function initGl() {
     ].join("\n") + "\n\n" + assets.get("vertex.shader");
     const program = compileShader(vertexCode, fragmentCode);
     gl.useProgram(program);
+
+    xdetail(["gl.ts", "created shaders"]);
+    xdetail(["gl.ts", "WebGL", "initializing", "uniforms, attributes, buffers, framebuffers and textures"])
     console.log(`%c [${timeSinceAppStart()}] √ created WebGL shaders`, "color: #0f0")
     updateStatus("initializing");
-    log_TODO_MIGRATE("[gl.ts] [initializing] WebGL");
-    log_TODO_MIGRATE("[gl.ts] [initializing] WebGL.uniforms");
     ["u_texture", "u_fbTex", "u_mask", "u_mode", "u_maskMode", "u_opacity", "u_eTL", "u_eTR", "u_eBL", "u_eBR"]
         .forEach(uname => uniforms.set(uname, undefinedMsg(gl?.getUniformLocation(program, uname), "failed to resolve uniform")));
-    log_TODO_MIGRATE("[gl.ts] [initializing] WebGL.attributes");
-    log_TODO_MIGRATE("[gl.ts] [initializing] WebGL.buffers");
-    log_TODO_MIGRATE("[gl.ts] [initializing] WebGL.textures");
     lg = {
         objPosLoc: gl.getAttribLocation(program, "a_objectPos"),
         texPosLoc: gl.getAttribLocation(program, "a_texturePos"),
@@ -112,7 +113,7 @@ async function initGl() {
     gl.enableVertexAttribArray(lg.texPosLoc);
     gl.bufferData(gl.ARRAY_BUFFER, new Float32Array([0, 0, 1, 0, 1, 1, 0, 0, 0, 1, 1, 1]), gl.STATIC_DRAW);
     updateStatus("loading components")
-    log_TODO_MIGRATE("[gl.ts] [initializing] elements");
+    log(["gl.ts", "loading elements"])
     loadElmnts().then(() => {
         requestAnimationFrame(render);
         updateStatus("ready");
