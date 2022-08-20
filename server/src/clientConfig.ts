@@ -17,7 +17,7 @@ export async function clientConfigV2(): Promise<string> {
         .map(async elItem => joincomma([
             elItem.id,
             elItem.type,
-            ...(await Promise.all(
+            joincomma(await Promise.all(
                 (await db.all("SELECT prop, valueType, value FROM elProps WHERE el = ?", elItem.id))
                     .map(async ({ prop, valueType, value }) => {
                         const { input, output } = await db.get("SELECT input, output FROM propMapping WHERE el = ? AND prop = ?") || {
