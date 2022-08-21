@@ -11,3 +11,15 @@ function escapeRegExp(str: string) {
 function joincomma(splitted: string[], char: string = ",") {
     return splitted.map(_ => _.replace(/\\/g, "\\\\").split(char).join("\\" + char)).join(char);
 }
+
+function interpolate(rangeStart: number, valueOfRangeStart: number, rangeEnd: number, valueOfRangeEnd: number, val: number) {
+    return valueOfRangeStart + (
+        (
+            (val - rangeStart)
+            *
+            (valueOfRangeEnd - valueOfRangeStart)
+        )
+        /
+        (rangeEnd - rangeStart)
+    )
+}
