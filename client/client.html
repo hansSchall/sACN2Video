@@ -11,8 +11,9 @@
             
             const flags = {
                 transform: true,
-                clockPrescaler: parseInt(href.searchParams.get("clock")) ?? 2,
-                overlayVerbose: parseInt(href.searchParams.get("verbose")) ?? 0
+                clockPrescaler: parseInt(href.searchParams.get("clock")) || 2,
+                overlayVerbose: parseInt(href.searchParams.get("verbose")) || 0,
+                reportServer: href.searchParams.get("report")
             }
         </script>
         <style>

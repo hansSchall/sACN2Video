@@ -26,5 +26,6 @@ declare const firstScriptTimestamp: number;
 declare const flags: {
     transform: boolean,
     clockPrescaler: number,
-    overlayVerbose: number
+    overlayVerbose: number,
+    reportServer: string | null | undefined,
 }

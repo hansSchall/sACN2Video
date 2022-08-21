@@ -10,13 +10,18 @@ function init() {
     initAssets();
     initSocket();
     initGl().catch(globalErrorHandler);
+
     const fURL = new URL(location.href);
     fURL.pathname = "/report-to"
     fetch(fURL).then(res => {
         if (res.ok) {
             res.text().then(cont => {
                 const [serverName, reporterName] = splitcomma(cont);
-                logserver.start(new URL(serverName), reporterName);
+                if (flags.reportServer) {
+                    logserver.start(new URL(flags.reportServer), reporterName);
+                } else {
+                    logserver.start(new URL(serverName), reporterName);
+                }
             })
         }
     })
