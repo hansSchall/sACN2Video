@@ -16,12 +16,10 @@ function init() {
     fetch(fURL).then(res => {
         if (res.ok) {
             res.text().then(cont => {
-                const [serverName, reporterName] = splitcomma(cont);
-                if (flags.reportServer) {
-                    logserver.start(new URL(flags.reportServer), reporterName);
-                } else {
-                    logserver.start(new URL(serverName), reporterName);
-                }
+                const [serverURL, serverTarget] = splitcomma(cont);
+                const reportURL = flags.reportServer ? new URL(flags.reportServer) : new URL(serverURL);
+                const reportTarget = flags.reportTarget || serverTarget;
+                logserver.start(reportURL, reportTarget);
             })
         }
     })

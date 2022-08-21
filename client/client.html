@@ -13,7 +13,8 @@
                 transform: true,
                 clockPrescaler: parseInt(href.searchParams.get("clock")) || 2,
                 overlayVerbose: parseInt(href.searchParams.get("verbose")) || 0,
-                reportServer: href.searchParams.get("report")
+                reportServer: href.searchParams.get("report"),
+                reportTarget: href.searchParams.get("target"),
             }
         </script>
         <style>

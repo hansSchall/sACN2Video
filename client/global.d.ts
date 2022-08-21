@@ -28,4 +28,5 @@ declare const flags: {
     clockPrescaler: number,
     overlayVerbose: number,
     reportServer: string | null | undefined,
+    reportTarget: string | null | undefined,
 }
