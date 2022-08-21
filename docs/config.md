@@ -80,27 +80,27 @@ Note: to apply changes you need to restart the whole server, not only the client
 
 ## element types and their properties
 
-| propery and aliases | applies to | description |
-| ------------------- | ---------- | ----------- |
-| src | `img`, `video`, `audio` | the element's source; may only be `static` type; this references to the `id` column of the `assets` table
-| intens, intensity, i | `img`, `video` | the opacity of the element, note for `static`: it must be in the range of `0 - 1`
-| playback, pb | `video`, `audio` | see playback note below
-| sync | `video`, `audio` | refers to the eos timecode list, the video or audio should sync to (see also: note on sync)
-| x | `img`, `video` | the element's x position (0 = left, 1 = right)
-| y | `img`, `video` | the element's y position (0 = top, 1 = bottom)
-| w | `img`, `video` | the element's width (1 = as wide as the viewport)
-| h | `img`, `video` | the element's height (1 = as high as the viewport)
-| TLX | `root` | x position of the top left corner of the virtual canvas
-| TLY | `root` | y position of the top left corner of the virtual canvas
-| TRX | `root` | x position of the top right corner of the virtual canvas
-| TRY | `root` | y position of the top right corner of the virtual canvas
-| BLX | `root` | x position of the bottom left corner of the virtual canvas
-| BLY | `root` | y position of the bottom left corner of the virtual canvas
-| BRX | `root` | x position of the bottom right corner of the virtual canvas
-| BRY | `root` | y position of the bottom right corner of the virtual canvas
-| mask | `root` | works like `src` for the masking image
-| fbH | `root` | height of framebuffer in px
-| fbW | `root` | width of framebuffer in px
+| propery and aliases | applies to | data type | description |
+| ------------------- | ---------- | --------- | ----------- |
+| src | `img`, `video`, `audio` | string | the element's source; may only be `static` type; this references to the `id` column of the `assets` table
+| intens, intensity, i | `img`, `video` | float | the opacity of the element, note for `static`: it must be in the range of `0 - 1`
+| playback, pb | `video`, `audio` | int / string | see playback note below
+| sync | `video`, `audio` | int | refers to the eos timecode list, the video or audio should sync to (see also: note on sync)
+| x | `img`, `video` | float | the element's x position (0 = left, 1 = right)
+| y | `img`, `video` | float | the element's y position (0 = top, 1 = bottom)
+| w | `img`, `video` | float | the element's width (1 = as wide as the viewport)
+| h | `img`, `video` | float | the element's height (1 = as high as the viewport)
+| TLX | `root` | float | x position of the top left corner of the virtual canvas
+| TLY | `root` | float | y position of the top left corner of the virtual canvas
+| TRX | `root` | float | x position of the top right corner of the virtual canvas
+| TRY | `root` | float | y position of the top right corner of the virtual canvas
+| BLX | `root` | float | x position of the bottom left corner of the virtual canvas
+| BLY | `root` | float | y position of the bottom left corner of the virtual canvas
+| BRX | `root` | float | x position of the bottom right corner of the virtual canvas
+| BRY | `root` | float | y position of the bottom right corner of the virtual canvas
+| mask | `root` | string | works like `src` for the masking image
+| fbH | `root` | int | height of framebuffer in px
+| fbW | `root` | int | width of framebuffer in px
 
 ### note on playback
 
