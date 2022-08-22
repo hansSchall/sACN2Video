@@ -13,11 +13,7 @@ function createValueMapping(input: string, output: string): (value: string | num
     }
 
     return function (value: string | number) {
-        if (typeof value == "string") {
-            const valueAsNumber = +value;
-            if (!isNaN(valueAsNumber))
-                value = valueAsNumber;
-        }
+        value = convertToNumberIfPossible(value);
         let directMapping = mappingDatabase.find(_ => _[0] == value);
         if (directMapping) {
             return directMapping[1];
@@ -59,8 +55,8 @@ function createValueMapping(input: string, output: string): (value: string | num
 
                 }
 
-                let biggerRecValue = numbered[unBiggestInd][1];
-                let smallerRecValue = numbered[unSmallestInd][1];
+                let biggerRecValue = convertToNumberIfPossible(numbered[unBiggestInd][1]);
+                let smallerRecValue = convertToNumberIfPossible(numbered[unSmallestInd][1]);
 
                 if (typeof smallerRecValue == "string" && typeof biggerRecValue == "string") {
                     // get nearest

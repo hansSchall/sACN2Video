@@ -23,3 +23,15 @@ function interpolate(rangeStart: number, valueOfRangeStart: number, rangeEnd: nu
         (rangeEnd - rangeStart)
     )
 }
+
+function convertToNumberIfPossible(val: number | string, type: "int" | "float" | ((val: number | string) => number) = "float") {
+    if (typeof val == "number")
+        return val;
+    const converter = typeof type == "function" ? type : (type == "int" ? parseInt : parseFloat);
+    const asNum = converter(val as string);
+    if (isNaN(asNum)) {
+        return val;
+    } else {
+        return asNum;
+    }
+}
