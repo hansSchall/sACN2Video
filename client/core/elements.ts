@@ -194,6 +194,7 @@ abstract class Elmnt {
             } else {
                 // this.updatePars(name, value, false);
             }
+            updateValue(value, false);
         } else if (type == "sacn") {
             const rawaddr = value.split(/(\/|\+|\,|\.|\\)/).map(_ => parseInt(_)).filter(_ => !isNaN(_));
             let addr: number | [number, number]
