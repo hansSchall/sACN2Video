@@ -187,7 +187,6 @@ abstract class Elmnt {
             } else {
                 // this.updatePars(name, value, false);
             }
-            updateValue(value);
         } else if (type == "sacn") {
             const rawaddr = value.split(/(\/|\+|\,|\.|\\)/).map(_ => parseInt(_)).filter(_ => !isNaN(_));
             let addr: number | [number, number]
@@ -205,12 +204,16 @@ abstract class Elmnt {
 
             if (typeof addr == "number") { // 8
                 addSacnListener(addr, value => {
-                    this.updatePars(name, value / 255, true);
+                    if (!valueMapping)
+                        valueMapping = val => (+val / 255);
+                    updateValue(value, true);
                 });
             } else { // 16
                 let valuelow = 0, valuehi = 0;
                 const compute16bValue = (() => {
-                    updateValue(((valuehi << 8) + valuelow) / 65535, true);
+                    if (!valueMapping)
+                        valueMapping = val => (+val / 65535);
+                    updateValue(((valuehi << 8) + valuelow), true);
                 }).bind(this);
                 addSacnListener(addr[0], value => {
                     valuelow = value;
