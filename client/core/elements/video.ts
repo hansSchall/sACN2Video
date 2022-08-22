@@ -34,4 +34,8 @@ class VideoElmnt extends Elmnt {
                 super.updatePars(par, value, sacn);
         }
     }
+    getTransformMatrices(): [number[] | null, number[] | null] {
+        return [null, null];
+    }
+
 }

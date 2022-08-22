@@ -82,6 +82,12 @@ abstract class Elmnt {
         gl.bufferData(gl.ARRAY_BUFFER, Pos2Buffer(this.pos), gl.DYNAMIC_DRAW);
     }
     pos: Pos = { x: 0, y: 0, h: 1, w: 1 };
+
+    abstract getTransformMatrices(): [number[] | null, number[] | null];
+
+    elementRotation: number = 0;
+    textureRotation: number = 0;
+
     updatePars(par: string, value: string | number, sacn?: boolean): void {
         switch (par) {
             case "intens":
@@ -101,6 +107,14 @@ abstract class Elmnt {
                 break;
             case "w":
                 this.pos.w = parseFloat(value as string);
+                break;
+            case "re":
+                this.elementRotation = parseFloat(value as string);
+                this.getTransformMatrices();
+                break;
+            case "rt":
+                this.textureRotation = parseFloat(value as string);
+                this.getTransformMatrices();
                 break;
         }
     }

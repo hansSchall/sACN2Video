@@ -68,8 +68,21 @@ async function initGl() {
     xdetail(["gl.ts", "WebGL", "initializing", "uniforms, attributes, buffers, framebuffers and textures"])
     console.log(`%c [${timeSinceAppStart()}] √ created WebGL shaders`, "color: #0f0")
     updateStatus("initializing");
-    ["u_texture", "u_fbTex", "u_mask", "u_mode", "u_maskMode", "u_opacity", "u_eTL", "u_eTR", "u_eBL", "u_eBR"]
-        .forEach(uname => uniforms.set(uname, undefinedMsg(gl?.getUniformLocation(program, uname), "failed to resolve uniform")));
+    [
+        "u_texture",
+        "u_fbTex",
+        "u_mask",
+        "u_mode",
+        "u_maskMode",
+        "u_opacity",
+        "u_eTL",
+        "u_eTR",
+        "u_eBL",
+        "u_eBR",
+        "u_el_transform",
+        "u_tex_transform",
+    ]
+        .forEach(uname => uniforms.set(uname, undefinedMsg(gl?.getUniformLocation(program, uname), `failed to resolve uniform ${uname}`)));
     lg = {
         objPosLoc: gl.getAttribLocation(program, "a_objectPos"),
         texPosLoc: gl.getAttribLocation(program, "a_texturePos"),
@@ -172,6 +185,9 @@ function render() {
     for (let el of elmnts) {
         const op = el.getOpacity();
         if (op == 0) continue;
+        const [elTransform, texTransform] = el.getTransformMatrices();
+        gl.uniformMatrix3fv(getUniform("u_el_transform"), false, elTransform || m3.empty())
+        gl.uniformMatrix3fv(getUniform("u_tex_transform"), false, texTransform || m3.empty())
         gl.uniform1f(getUniform("u_opacity"), op);
         el.bufferPos();
         el.bindTex();
@@ -179,6 +195,8 @@ function render() {
     }
     if (flags.transform) {
         gl.uniform1i(getUniform("u_maskMode"), useMask ? 1 : 0);
+        gl.uniformMatrix3fv(getUniform("u_el_transform"), false, m3.empty())
+        gl.uniformMatrix3fv(getUniform("u_tex_transform"), false, m3.empty())
         gl.bufferData(gl.ARRAY_BUFFER, new Float32Array([0, 0, 1, 0, 1, 1, 0, 0, 0, 1, 1, 1]), gl.DYNAMIC_DRAW);
         gl.bindFramebuffer(gl.FRAMEBUFFER, null);
         gl.viewport(0, 0, gl.canvas.width, gl.canvas.height);
