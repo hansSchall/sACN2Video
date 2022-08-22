@@ -66,7 +66,8 @@ async function loadElmntsV2() {
             throw new Error(`gl.ts loadElmnts(): config[...][1] is not a string`);
         }
         const props: Prop[] = splitcomma(el[2]).map(_ => splitcomma(_)) as any[];
-        if (props.findIndex(_ => _.length != 3 && _.length != 5) != -1)
+        console.log(props)
+        if (props.findIndex(_ => _.length != 3 && _.length != 6) != -1)
             throw new Error("gl.ts loadElmnts(): property descriptor has no matching length");
         switch (el[1] as string) {
             case "img":
@@ -94,7 +95,7 @@ async function loadElmntsV2() {
 }
 
 
-type Prop = [string, string, string] | [string, string, string, string, string];
+type Prop = [string, string, string] | [string, string, string, string, string, number | string];
 
 const elmnts = new Set<Elmnt>();
 abstract class Elmnt {
@@ -157,8 +158,9 @@ abstract class Elmnt {
                 break;
         }
     }
-    initPar([name, type, value, input = "", output = ""]: Prop) {
+    initPar([name, type, value, input = "", output = "", version]: Prop) {
         type = type.toLowerCase();
+        version = convertToNumberIfPossible(version ?? 0);
         function addSacnListener(addr: number, listener: (this: Elmnt, value: number) => void) {
             if (sacnListener.has(addr)) {
                 sacnListener.get(addr)?.add(listener);
@@ -174,8 +176,13 @@ abstract class Elmnt {
         let valueMapping: ((val: string | number) => string | number) | undefined;
 
         if (input && output) {
-            valueMapping = createValueMapping(input, output);
+            if (version == 1)
+                valueMapping = createValueMappingV1(input, output);
+            else
+                throw new Error("valueMapping.version not supported")
         }
+
+        console.log(valueMapping);
 
         if (type.startsWith("static")) {
             if (type == "staticcp") {

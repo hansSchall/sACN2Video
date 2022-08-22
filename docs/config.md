@@ -47,6 +47,30 @@ stores the properties of all the elements
 | valueType | TEXT | type of the value (see below)
 | value | TEXT | if (valueType == "static") this will be the value otherwise this extends the valueType
 
+## propMapping table
+
+> this is currently in beta state, behavior may change in some special cases, but for simple mappings like shown in the example this feature is stable
+
+`CREATE TABLE propMapping (el text, prop text, input text, output text, version integer)`
+
+stores the properties of all the elements
+
+| column | type | description |
+| ------ | ---- | ----------- |
+| el | TEXT | references to the element (same as in elProps)
+| prop | TEXT | property name (same as in elProps)
+| input | TEXT | comma seperated list of input mapping (see note below)
+| output | TEXT | comma seperated list of output mapping (see note below)
+| version | INTEGER | version of valueMapping
+
+Note: The input and output lists together describe a table defining the value mapping.
+
+a record like this `input: 0,255 output: 0,360` maps sacn values to an angle in degrees.
+
+If you have doubts how to use this, take a look at `client/core/valueMapping.ts` to learn, which result is achived in special cases.
+
+`>>improvements welcome<<`
+
 ## the valueType concept
 
 This simplifies the configuration a lot, beause some properties may be either controlled by sACN or be set to a fixed value (the position of an element is a good example).
@@ -58,9 +82,11 @@ A short overview
 | valueType | description |
 | --------- | ----------- |
 | `static` | the value will be exactly as it is. If it cannot be converted to number it will be used as string
-| `staticcp` | short for 'static clipspace' eg. the interval `-1 to 1` is converted to `0 to 1`
-| `staticpcp` | short for 'static percentage clipspace' eg. the interval `-10 to 100` is converted to `0 to 1`
-| `sacn` | the property is controlled via sACN (adress format see below)
+| `staticcp` | short for 'static clipspace' eg. the interval `-1 to 1` is converted to `0 to 1`. See note below.
+| `staticpcp` | short for 'static percentage clipspace' eg. the interval `-10 to 100` is converted to `0 to 1`. See note below.
+| `sacn` | the property is controlled via sACN (adress format see below). Per default this is mapped to `0 to 1`. The input for valueMapping is raw (`0 to 255(8b) / 65535(16b)`);
+
+All mapping functions above are overwritten by a custom valueMapping
 
 ## sACN adress format
 

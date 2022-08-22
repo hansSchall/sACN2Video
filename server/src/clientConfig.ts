@@ -20,9 +20,9 @@ export async function clientConfigV2(): Promise<string> {
             joincomma(await Promise.all(
                 (await db.all("SELECT prop, valueType, value FROM elProps WHERE el = ?", elItem.id))
                     .map(async ({ prop, valueType, value }) => {
-                        const mapping = await db.get("SELECT input, output FROM propMapping WHERE el = ? AND prop = ?", [elItem.id, prop]);
+                        const mapping = await db.get("SELECT input, output, version FROM propMapping WHERE el = ? AND prop = ?", [elItem.id, prop]);
                         return joincomma([
-                            prop, valueType, value, mapping?.input ?? "", mapping?.output ?? "",
+                            prop, valueType, value, mapping?.input ?? "", mapping?.output ?? "", mapping?.version?.toString() ?? ""
                         ]);
                     })
             ))

@@ -1,4 +1,4 @@
-function createValueMapping(input: string, output: string): (value: string | number) => string | number {
+function createValueMappingV1(input: string, output: string): (value: string | number) => string | number {
     const inputSplit = splitcomma(input);
     const outputSplit = splitcomma(output);
     const mappingDatabase: [string, string][] = [];
@@ -21,10 +21,10 @@ function createValueMapping(input: string, output: string): (value: string | num
             if (typeof value == "number") {
                 const numbered = mappingDatabase.map(([inVal, outVal]) => [+inVal, outVal] as [number, string | number])
 
-                let unBiggestRec = -Infinity,
-                    unBiggestInd = NaN,
-                    unSmallestRec = Infinity,
-                    unSmallestInd = NaN;
+                let unNextBiggerRec = -Infinity,
+                    unNextBiggerInd = NaN,
+                    unNextSmallerRec = Infinity,
+                    unNextSmallerInd = NaN;
 
                 for (let i = 0; i < numbered.length; i++) {
                     const [inVal, outVal] = numbered[i];
@@ -32,36 +32,36 @@ function createValueMapping(input: string, output: string): (value: string | num
                         continue;
 
                     if (inVal > value) {
-                        if (inVal < unSmallestRec) {
-                            unSmallestRec = inVal;
-                            unSmallestInd = i;
+                        if (inVal < unNextSmallerRec) {
+                            unNextSmallerRec = inVal;
+                            unNextSmallerInd = i;
                         }
 
-                        if (inVal == unSmallestRec) {
+                        if (inVal == unNextSmallerRec) {
                             // unSmallestInd.push(i);
-                            unSmallestInd = i; // TODO multiple outVal for one inVal not supported yet
+                            unNextSmallerInd = i; // TODO multiple outVal for one inVal not supported yet
                         }
                     } else {
-                        if (inVal > unBiggestRec) {
-                            unBiggestRec = inVal;
-                            unBiggestInd = i;
+                        if (inVal > unNextBiggerRec) {
+                            unNextBiggerRec = inVal;
+                            unNextBiggerInd = i;
                         }
 
-                        if (inVal == unBiggestRec) {
+                        if (inVal == unNextBiggerRec) {
                             // unBiggestInd.push(i);
-                            unBiggestInd = i; // TODO multiple outVal for one inVal not supported yet
+                            unNextBiggerInd = i; // TODO multiple outVal for one inVal not supported yet
                         }
                     }
 
                 }
 
-                let biggerRecValue = convertToNumberIfPossible(numbered[unBiggestInd][1]);
-                let smallerRecValue = convertToNumberIfPossible(numbered[unSmallestInd][1]);
+                let biggerRecValue = convertToNumberIfPossible(numbered[unNextBiggerInd][1]);
+                let smallerRecValue = convertToNumberIfPossible(numbered[unNextSmallerInd][1]);
 
                 if (typeof smallerRecValue == "string" && typeof biggerRecValue == "string") {
                     // get nearest
-                    let biggerDis = Math.abs(unBiggestRec - value);
-                    let smallerDis = Math.abs(unSmallestRec - value);
+                    let biggerDis = Math.abs(unNextBiggerRec - value);
+                    let smallerDis = Math.abs(unNextSmallerRec - value);
                     if (biggerDis > smallerDis) {
                         return smallerRecValue;
                     } else {
@@ -69,7 +69,7 @@ function createValueMapping(input: string, output: string): (value: string | num
                     }
                 } else if (typeof smallerRecValue == "number" && typeof biggerRecValue == "number") {
                     // interpolate
-                    return interpolate(unSmallestRec, smallerRecValue, unBiggestRec, biggerRecValue, value);
+                    return interpolate(unNextSmallerRec, smallerRecValue, unNextBiggerRec, biggerRecValue, value);
                 } else {
                     // value of string
                     if (typeof biggerRecValue == "number") {
