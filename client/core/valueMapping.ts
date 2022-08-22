@@ -1,4 +1,4 @@
-function createValueMapping(input: string, output: string): (value: string | number) => string | number {
+function createValueMappingV1(input: string, output: string): (value: string | number) => string | number {
     const inputSplit = splitcomma(input);
     const outputSplit = splitcomma(output);
     const mappingDatabase: [string, string][] = [];

@@ -51,7 +51,7 @@ stores the properties of all the elements
 
 > this is currently in beta state, behavior may change in some special cases, but for simple mappings like shown in the example this feature is stable
 
-`CREATE TABLE propMapping (el text, prop text, input text, output text)`
+`CREATE TABLE propMapping (el text, prop text, input text, output text, version integer)`
 
 stores the properties of all the elements
 
@@ -60,9 +60,10 @@ stores the properties of all the elements
 | el | TEXT | references to the element (same as in elProps)
 | prop | TEXT | property name (same as in elProps)
 | input | TEXT | comma seperated list of input mapping (see note below)
-| value | TEXT | comma seperated list of output mapping (see note below)
+| output | TEXT | comma seperated list of output mapping (see note below)
+| version | INTEGER | version of valueMapping
 
-Note: The input and aoutput lists together describe a table defining the value mapping.
+Note: The input and output lists together describe a table defining the value mapping.
 
 a record like this `input: 0,255 output: 0,360` maps sacn values to an angle in degrees.
 
