@@ -3,4 +3,7 @@ class EffectElmnt extends Elmnt {
         super(id);
         props.forEach(this.initPar.bind(this));
     }
+    getTransformMatrices(): [number[] | null, number[] | null] {
+        return [m3.empty(), m3.empty()];
+    }
 }
