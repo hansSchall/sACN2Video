@@ -5,6 +5,7 @@ uniform lowp int u_mode;
 uniform float u_opacity;
 
 #ifdef ENABLE_TRANSFORM
+
 uniform sampler2D u_mask;
 uniform lowp int u_maskMode;
 uniform sampler2D u_fbTex;
@@ -58,15 +59,26 @@ vec2 transform3D(in vec2 p, in vec2 a, in vec2 b, in vec2 c, in vec2 d)
 }
 #endif
 
+bool outOf01Range(vec2 pos) {
+    if (pos.x < 0. || pos.x > 1. || pos.y < 0. || pos.y > 1.) {
+        return true;
+    } else {
+        return false;
+    }
+}
+
 void main() {
     if (u_mode == 1) { // 1:1 copy
         gl_FragColor = texture2D(u_texture, v_texturePos);
-        gl_FragColor.a = u_opacity;
+        gl_FragColor.a *= u_opacity;
+        if (outOf01Range(v_texturePos)) {
+            gl_FragColor = vec4(0, 0, 0, 0); //transparent
+        }
     }
 #ifdef ENABLE_TRANSFORM
     else if (u_mode == 2) {
         vec2 texPix = transform3D(v_texturePos, u_eTL, u_eTR, u_eBR, u_eBL);
-        if (texPix.x < 0. || texPix.x > 1. || texPix.y < 0. || texPix.y > 1.) {
+        if (outOf01Range(texPix)) {
             gl_FragColor = vec4(0, 0, 0, 0); //transparent
         } else {
             gl_FragColor = texture2D(u_fbTex, texPix);

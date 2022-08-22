@@ -54,8 +54,48 @@ async function loadElmnts() {
     clear();
 }
 
+async function loadElmntsV2() {
+    const config = splitcomma(await (await fetch("/config/v2")).text());
+    for (let el_ of config) {
+        const el = splitcomma(el_);
+        const id: string | unknown = el[0];
+        if (typeof id != "string") {
+            throw new Error(`gl.ts loadElmnts(): config[...][0] is not a string`);
+        }
+        if (typeof el[1] != "string") {
+            throw new Error(`gl.ts loadElmnts(): config[...][1] is not a string`);
+        }
+        const props: Prop[] = splitcomma(el[2]).map(_ => splitcomma(_)) as any[];
+        console.log(props)
+        if (props.findIndex(_ => _.length != 3 && _.length != 6) != -1)
+            throw new Error("gl.ts loadElmnts(): property descriptor has no matching length");
+        switch (el[1] as string) {
+            case "img":
+                elmnts.add(new ImgElmnt(id, props));
+                break;
+            case "video":
+                elmnts.add(new VideoElmnt(id, props));
+                break;
+            case "audio":
+                elmnts.add(new AudioElmnt(id, props));
+                break;
+            case "effect":
+                elmnts.add(new EffectElmnt(id, props));
+                break;
+            case "root":
+                if (rootLock) {
+                    console.error(`found more than one root config`);
+                } else {
+                    rootElement(props)
+                }
+                break;
+        }
+    }
+    clear();
+}
 
-type Prop = [string, string, string];
+
+type Prop = [string, string, string] | [string, string, string, string, string, number | string];
 
 const elmnts = new Set<Elmnt>();
 abstract class Elmnt {
@@ -82,6 +122,12 @@ abstract class Elmnt {
         gl.bufferData(gl.ARRAY_BUFFER, Pos2Buffer(this.pos), gl.DYNAMIC_DRAW);
     }
     pos: Pos = { x: 0, y: 0, h: 1, w: 1 };
+
+    abstract getTransformMatrices(): [number[] | null, number[] | null];
+
+    elementRotation: number = 0;
+    textureRotation: number = 0;
+
     updatePars(par: string, value: string | number, sacn?: boolean): void {
         switch (par) {
             case "intens":
@@ -102,10 +148,19 @@ abstract class Elmnt {
             case "w":
                 this.pos.w = parseFloat(value as string);
                 break;
+            case "re":
+                this.elementRotation = parseFloat(value as string);
+                this.getTransformMatrices();
+                break;
+            case "rt":
+                this.textureRotation = parseFloat(value as string);
+                this.getTransformMatrices();
+                break;
         }
     }
-    initPar([name, type, value]: Prop) {
+    initPar([name, type, value, input = "", output = "", version]: Prop) {
         type = type.toLowerCase();
+        version = convertToNumberIfPossible(version ?? 0);
         function addSacnListener(addr: number, listener: (this: Elmnt, value: number) => void) {
             if (sacnListener.has(addr)) {
                 sacnListener.get(addr)?.add(listener);
@@ -120,6 +175,15 @@ abstract class Elmnt {
 
         let valueMapping: ((val: string | number) => string | number) | undefined;
 
+        if (input && output) {
+            if (version == 1)
+                valueMapping = createValueMappingV1(input, output);
+            else
+                throw new Error("valueMapping.version not supported")
+        }
+
+        console.log(valueMapping);
+
         if (type.startsWith("static")) {
             if (type == "staticcp") {
                 if (!valueMapping) valueMapping = val => (parseFloat(val as string) + 1) / 2
@@ -130,7 +194,7 @@ abstract class Elmnt {
             } else {
                 // this.updatePars(name, value, false);
             }
-            updateValue(value);
+            updateValue(value, false);
         } else if (type == "sacn") {
             const rawaddr = value.split(/(\/|\+|\,|\.|\\)/).map(_ => parseInt(_)).filter(_ => !isNaN(_));
             let addr: number | [number, number]
@@ -148,12 +212,16 @@ abstract class Elmnt {
 
             if (typeof addr == "number") { // 8
                 addSacnListener(addr, value => {
-                    this.updatePars(name, value / 255, true);
+                    if (!valueMapping)
+                        valueMapping = val => (+val / 255);
+                    updateValue(value, true);
                 });
             } else { // 16
                 let valuelow = 0, valuehi = 0;
                 const compute16bValue = (() => {
-                    updateValue(((valuehi << 8) + valuelow) / 65535, true);
+                    if (!valueMapping)
+                        valueMapping = val => (+val / 65535);
+                    updateValue(((valuehi << 8) + valuelow), true);
                 }).bind(this);
                 addSacnListener(addr[0], value => {
                     valuelow = value;

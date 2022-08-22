@@ -13,6 +13,9 @@ class AudioElmnt extends Elmnt {
         textureLoadIndicator(false);
         props.forEach(this.initPar.bind(this));
     }
+    getTransformMatrices(): [null, null] {
+        return [null, null];
+    }
     playback: Playback;
     audio: HTMLVideoElement;
     loaded: boolean = false;
