@@ -20,10 +20,6 @@ vec2 convBack(vec2 pos) {
 }
 
 void main() {
-    gl_Position = vec4(
-        (u_el_transform * vec3(convPos(a_objectPos), 1)).xy
-        , 0, 1);
-    // gl_Position = ;
+    gl_Position = vec4((u_el_transform * vec3(convPos(a_objectPos), 1)).xy, 0, 1);
     v_texturePos = convBack((u_tex_transform * vec3(convPos(a_texturePos), 1.)).xy * vec2(1., FLIP ? -1 : 1));
-    // v_texturePos = ((u_tex_transform * vec3((a_texturePos), 1)).xy);
 }

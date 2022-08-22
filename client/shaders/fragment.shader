@@ -72,14 +72,14 @@ void main() {
         gl_FragColor = texture2D(u_texture, v_texturePos);
         gl_FragColor.a *= u_opacity;
         if (outOf01Range(v_texturePos)) {
-            gl_FragColor = vec4(0, 1, 1, 1); //transparent
+            gl_FragColor = vec4(0, 0, 0, 0); //transparent
         }
     }
 #ifdef ENABLE_TRANSFORM
     else if (u_mode == 2) {
         vec2 texPix = transform3D(v_texturePos, u_eTL, u_eTR, u_eBR, u_eBL);
         if (outOf01Range(texPix)) {
-            gl_FragColor = vec4(0, 1, 0, 1); //transparent
+            gl_FragColor = vec4(0, 0, 0, 0); //transparent
         } else {
             gl_FragColor = texture2D(u_fbTex, texPix);
             float alpha = 1.;
