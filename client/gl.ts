@@ -128,11 +128,11 @@ async function initGl() {
     gl.bufferData(gl.ARRAY_BUFFER, new Float32Array([0, 0, 1, 0, 1, 1, 0, 0, 0, 1, 1, 1]), gl.STATIC_DRAW);
     updateStatus("loading components")
     log(["gl.ts", "loading elements"])
-    loadElmnts().then(() => {
+    loadElmntsV2().then(() => {
         requestAnimationFrame(render);
         updateStatus("ready");
         hideInfos();
-    })
+    }).catch(reportError);
 }
 let lg: {
     pr: WebGLProgram,

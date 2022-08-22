@@ -16,7 +16,9 @@ export async function init_db() {
         db.run(`CREATE TABLE IF NOT EXISTS config_osc (ip TEXT, port number);`),
         db.run(`CREATE TABLE IF NOT EXISTS config (id TEXT, value TEXT);`),
         db.run(`CREATE TABLE IF NOT EXISTS els (id text,type text,enabled NUMBER DEFAULT 1,zi float default 0,PRIMARY KEY(id));`),
-        db.run(`CREATE TABLE IF NOT EXISTS elProps (el text, prop text, valueType text, value text);`)])
+        db.run(`CREATE TABLE IF NOT EXISTS elProps (el text, prop text, valueType text, value text);`),
+        db.run(`CREATE TABLE IF NOT EXISTS propMapping (el text, prop text, input text, output text);`),
+        ])
     } catch (err) {
         console.error(err);
     }

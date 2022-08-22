@@ -15,7 +15,7 @@ import { staticAssets } from "./src/assets.js";
 import { initSacn } from "./src/sacn.js";
 import { initSocket } from "./src/socket.js";
 import expressWs from "express-ws";
-import { clientConfig } from "./src/clientConfig.js";
+import { clientConfig, clientConfigV2 } from "./src/clientConfig.js";
 import { initOSC } from "./src/osc";
 import { joincomma } from "./src/utils";
 // import { join } from "path";
@@ -54,6 +54,11 @@ export async function main() {
         initSocket(app as any as expressWs.Application);
         app.get("/config", (req, res) => {
             clientConfig().then(config => {
+                res.end(config);
+            });
+        })
+        app.get("/config/v2", (req, res) => {
+            clientConfigV2().then(config => {
                 res.end(config);
             });
         })

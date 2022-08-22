@@ -41,14 +41,6 @@ class Logserver {
     }
 }
 
-function splitcomma(joined: string) {
-    return joined.split(/(?<!\\),/g).map(_ => _.replace(/\\(?!\\)/g, "").replace(/\\\\/g, "\\"))
-}
-
-function joincomma(splitted: string[]) {
-    return splitted.map(_ => _.replace(/\\/g, "\\\\").replace(/,/g, "\\,")).join(",");
-}
-
 function log(msg: string[] | string, type: "Log" | "Info" | "Warn" | "Error" = "Log") {
     logserver.log(msg, type);
 }
