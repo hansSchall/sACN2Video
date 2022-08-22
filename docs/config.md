@@ -90,6 +90,8 @@ Note: to apply changes you need to restart the whole server, not only the client
 | y | `img`, `video` | float | the element's y position (0 = top, 1 = bottom)
 | w | `img`, `video` | float | the element's width (1 = as wide as the viewport)
 | h | `img`, `video` | float | the element's height (1 = as high as the viewport)
+| re | `img`, `video` | float | element rotation (in degrees)
+| rt | `img`, `video` | float | texture rotation (in degrees)
 | TLX | `root` | float | x position of the top left corner of the virtual canvas
 | TLY | `root` | float | y position of the top left corner of the virtual canvas
 | TRX | `root` | float | x position of the top right corner of the virtual canvas
