@@ -49,9 +49,22 @@ versioning, code and so on. A long time during development there were two reposi
 (hansSchall/sACN2Video old version and hansSchall/sACN2Video2 new version). The renaming of
 all mentions is still in progress.
 
+### How to control the software with a light console?
+
+As the name implies the software is mainly controlled by sACN. So the answer is: Turn
+on sACN at your console and patch the channels exactly as you have defined them in the
+configuration editor. This is the same as connecting a DMX device - except that you
+don't need XLR cables ;-) . More details on patching can be found [here](/misc/fixture_definition.md).
+
+### You have questions or suggestions?
+
+[Questions: Create a discussion with the `how to use/configure/...` label.](https://github.com/hansSchall/sACN2Video/discussions/new?category=how-to-use-configure)
+
+Suggestions: Create a discussion or an issue.
+
 ## usefull links
 
-- [db schema](/server/dbSchema.sql)
+- [fixture definitions](/misc/fixture_definition.md)
 - [configuration database docs](/docs/config.md)
 
 
