@@ -9,7 +9,7 @@ Special transformation functions to match the projection surface's geomety are i
 transformation and overlay image).
 
 If you have questions how to use it, feel free to ask everything. [Create a discussion with the
-`how to use/configure/...` label.](https://github.com/hansSchall/sACN2Video2/discussions/new?category=how-to-use-configure)
+`how to use/configure/...` label.](https://github.com/hansSchall/sACN2Video/discussions/new?category=how-to-use-configure)
 
 ## How does the software work?
 

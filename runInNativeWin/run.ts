@@ -49,7 +49,7 @@ async function main() {
             "Abbrechen"
         ],
         cancelId: 3,
-        title: "sACN2Video2 native",
+        title: "sACN2Video native",
         defaultId: 1,
     })
     if (mode.response === FileMode.Cancel) {
