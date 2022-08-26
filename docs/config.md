@@ -111,6 +111,7 @@ Note: to apply changes you need to restart the whole server, not only the client
 | src | `img`, `video`, `audio` | string | the element's source; may only be `static` type; this references to the `id` column of the `assets` table
 | intens, intensity, i | `img`, `video` | float | the opacity of the element, note for `static`: it must be in the range of `0 - 1`
 | playback, pb | `video`, `audio` | int / string | see playback note below
+| vol | `video`, `audio` | float (0 - 1) | audio volume
 | sync | `video`, `audio` | int | refers to the eos timecode list, the video or audio should sync to (see also: note on sync)
 | x | `img`, `video` | float | the element's x position (0 = left, 1 = right)
 | y | `img`, `video` | float | the element's y position (0 = top, 1 = bottom)

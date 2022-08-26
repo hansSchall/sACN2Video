@@ -30,6 +30,9 @@ class VideoElmnt extends Elmnt {
             case "playback":
                 this.playback.parsePBState(Math.round(parseFloat(value as string) * 255));
                 break;
+            case "vol":
+                this.video.volume = parseFloat(value as string);
+                break;
             default:
                 super.updatePars(par, value, sacn);
         }
