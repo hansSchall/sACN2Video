@@ -14,13 +14,15 @@ let renderLoop = true;
 let fps = 0;
 let fpsEl: HTMLElement | undefined;
 
+const fpsCyclesPerSecond = 2;
+
 setInterval(() => {
     if (!fpsEl) return;
 
-    fpsEl.innerText = `${fps * 2}fps (${Math.round(renderTime.reduce((prev, current) => prev + current, 0) / renderTime.length * 1000)}μs of ${Math.round(1000000 / fps)}μs)`;
+    fpsEl.innerText = `${fps * fpsCyclesPerSecond}fps (${Math.round(renderTime.reduce((prev, current) => prev + current, 0) / renderTime.length * 1000)}μs of ${Math.round(1000000 / (fps * fpsCyclesPerSecond))}μs)`;
     renderTime = [];
     fps = 0;
-}, 500);
+}, 1000 / fpsCyclesPerSecond);
 
 async function initGl() {
     console.log(`%c [${timeSinceAppStart()}] starting init`, "color: #0ff");
