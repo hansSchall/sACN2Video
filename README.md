@@ -56,7 +56,7 @@ on sACN at your console and patch the channels exactly as you have defined them 
 configuration editor. This is the same as connecting a DMX device - except that you
 don't need XLR cables ;-) . More details on patching can be found [here](/misc/fixture_definition.md).
 
-## Error: Cannot find module 'C:\hans\ts\sACN2Video\server\node_modules\sacn\dist'. Please verify that the package.json has a valid "main" entry
+### Error: Cannot find module '...\sACN2Video\server\node_modules\sacn\dist'. Please verify that the package.json has a valid "main" entry
 
 If this message shows up when trying to start the server, run `npm run build` in `server/node_modules/sacn`
 
