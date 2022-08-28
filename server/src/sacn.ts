@@ -1,6 +1,6 @@
 import EventEmitter from "events";
 import { db } from "./db.js";
-import { ReceiverMerge } from "./sacnMerge.js";
+import { ReceiverMerge } from "sacn";
 
 export function encode(chan: number, value: number) {
     return ("00" + value.toString(16).toUpperCase()).slice(-2) + chan.toString(36);
