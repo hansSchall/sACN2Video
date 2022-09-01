@@ -105,8 +105,8 @@ abstract class Elmnt {
         gl.bindTexture(gl.TEXTURE_2D, this.tex);
         gl.texParameteri(gl.TEXTURE_2D, gl.TEXTURE_WRAP_S, gl.CLAMP_TO_EDGE);
         gl.texParameteri(gl.TEXTURE_2D, gl.TEXTURE_WRAP_T, gl.CLAMP_TO_EDGE);
-        gl.texParameteri(gl.TEXTURE_2D, gl.TEXTURE_MIN_FILTER, gl.NEAREST);
-        gl.texParameteri(gl.TEXTURE_2D, gl.TEXTURE_MAG_FILTER, gl.NEAREST);
+        gl.texParameteri(gl.TEXTURE_2D, gl.TEXTURE_MIN_FILTER, gl.LINEAR);
+        gl.texParameteri(gl.TEXTURE_2D, gl.TEXTURE_MAG_FILTER, gl.LINEAR);
     }
     protected tex: WebGLTexture;
     getOpacity() {
@@ -116,10 +116,6 @@ abstract class Elmnt {
     bindTex(bindPoint: number = glCtx?.TEXTURE_2D || 0) {
         const gl = getGLcontext();
         gl.bindTexture(bindPoint, this.tex);
-    }
-    bufferPos() {
-        const gl = getGLcontext();
-        gl.bufferData(gl.ARRAY_BUFFER, Pos2Buffer(this.pos), gl.DYNAMIC_DRAW);
     }
     pos: Pos = { x: 0, y: 0, h: 1, w: 1 };
 
@@ -181,8 +177,6 @@ abstract class Elmnt {
             else
                 throw new Error("valueMapping.version not supported")
         }
-
-        console.log(valueMapping);
 
         if (type.startsWith("static")) {
             if (type == "staticcp") {

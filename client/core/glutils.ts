@@ -10,7 +10,7 @@ function webGlundefined() {
     return new Error("[unexpected] WebGLContext is undefined");
 }
 
-function getGLcontext(): WebGLRenderingContext {
+function getGLcontext(): WebGL2RenderingContext {
     if (glCtx) {
         return glCtx;
     } else {
@@ -67,9 +67,18 @@ function compileShader(vertexCode: string, fragmentCode: string) {
     }
 }
 
+console.log(screen);
+
+function getRealClientSize() {
+    const scale = window.devicePixelRatio;
+    const displayWidth = window.innerWidth;
+    const displayHeight = window.innerHeight;
+    return [Math.floor(displayHeight * scale), Math.floor(displayWidth * scale)]
+}
+
 function resizeCanvasToDisplaySize(canvas: HTMLCanvasElement, gl: WebGLRenderingContext) {
-    const displayWidth = canvas.clientWidth;
-    const displayHeight = canvas.clientHeight;
+    const [displayHeight, displayWidth] = getRealClientSize();
+
     const needResize = canvas.width !== displayWidth ||
         canvas.height !== displayHeight;
     if (needResize) {

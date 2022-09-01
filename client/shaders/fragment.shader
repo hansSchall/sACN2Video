@@ -1,18 +1,21 @@
-varying vec2 v_texturePos;
+#version 300 es
+precision lowp float;
+precision lowp int;
 
-uniform sampler2D u_texture;
+in vec2 v_texturePos;
+
+out vec4 outColor;
+
+uniform sampler2D u_srcTex;
+uniform sampler2D u_vcTex;
+uniform sampler2D u_trTex;
+
 uniform lowp int u_mode;
+
 uniform float u_opacity;
-
-#ifdef ENABLE_TRANSFORM
-
-uniform sampler2D u_mask;
 uniform lowp int u_maskMode;
-uniform sampler2D u_fbTex;
-uniform vec2 u_eTL;
-uniform vec2 u_eTR;
-uniform vec2 u_eBL;
-uniform vec2 u_eBR;
+
+uniform mat4x2 u_cornerPinTr;
 
 // taken from https://iquilezles.org/articles/ibilinear/
 
@@ -57,7 +60,10 @@ vec2 transform3D(in vec2 p, in vec2 a, in vec2 b, in vec2 c, in vec2 d)
 
     return res;
 }
-#endif
+
+vec2 short3Dtransform(vec2 pos, mat4x2 tr) {
+    return transform3D(pos, tr[0], tr[1], tr[2], tr[3]);
+}
 
 bool outOf01Range(vec2 pos) {
     if (pos.x < 0. || pos.x > 1. || pos.y < 0. || pos.y > 1.) {
@@ -67,38 +73,75 @@ bool outOf01Range(vec2 pos) {
     }
 }
 
+// 0 to 1 > -1 to 1
+vec2 toClipspace(vec2 pos) {
+    return (pos * 2. - 1.);
+}
+// -1 to 1 > 0 to 1
+vec2 toTexture(vec2 pos) {
+    return ((pos + 1.) / 2.);
+}
+
+vec2 verticalFlip(vec2 pos) {
+    return vec2(pos.x, pos.y * -1. + 1.);
+}
+
+vec4 getTex(vec2 pos, sampler2D tex) {
+    vec2 texPix = toTexture(pos * vec2(1, -1));
+    if (outOf01Range(texPix)) {
+        return vec4(0, 0, 1, 1); //transparent
+    } else {
+        return texture(tex, texPix);
+        // outColor = vec4(texPix, 0, 1); //transparent
+    }
+}
+
+
 void main() {
     if (u_mode == 1) { // 1:1 copy
-        gl_FragColor = texture2D(u_texture, v_texturePos);
-        gl_FragColor.a *= u_opacity;
+        outColor = texture(u_srcTex, v_texturePos);
+        outColor.a *= u_opacity;
         if (outOf01Range(v_texturePos)) {
-            gl_FragColor = vec4(0, 0, 0, 0); //transparent
+            outColor = vec4(0, 0, 0, 0); //transparent
         }
-    }
-#ifdef ENABLE_TRANSFORM
-    else if (u_mode == 2) {
-        vec2 texPix = transform3D(v_texturePos, u_eTL, u_eTR, u_eBR, u_eBL);
+    } else if (u_mode == 2) {
+        vec2 texPix = short3Dtransform(v_texturePos, u_cornerPinTr);
         if (outOf01Range(texPix)) {
-            gl_FragColor = vec4(0, 0, 0, 0); //transparent
+            outColor = vec4(0, 0, 0, 0); //transparent
         } else {
-            gl_FragColor = texture2D(u_fbTex, texPix);
+            outColor = texture(u_vcTex, texPix);
             float alpha = 1.;
             //maskMode == 0 //disable mask
             if (u_maskMode == 1) { //red
-                alpha = texture2D(u_mask, v_texturePos).r;
+                alpha = texture(u_trTex, v_texturePos).r;
             } else if (u_maskMode == 2) { //green
-                alpha = texture2D(u_mask, v_texturePos).g;
+                alpha = texture(u_trTex, v_texturePos).g;
             } else if (u_maskMode == 3) { //blue
-                alpha = texture2D(u_mask, v_texturePos).b;
+                alpha = texture(u_trTex, v_texturePos).b;
             } else if (u_maskMode == 4) { //alpha
-                alpha = texture2D(u_mask, v_texturePos).a;
+                alpha = texture(u_trTex, v_texturePos).a;
             }
 #ifdef MASK_STAIRS
-            gl_FragColor.a = alpha > .5 ? 1. : 0.;
+            outColor.a = alpha > .5 ? 1. : 0.;
 #else
-            gl_FragColor.a = alpha;
+            outColor.a = alpha;
 #endif
         }
+    } else if (u_mode == 3) {  // transformTexture
+        vec2 texPix = transform3D(toTexture(v_texturePos), u_cornerPinTr[0], u_cornerPinTr[1], u_cornerPinTr[2], u_cornerPinTr[3]);
+        // vec2 texPix = transform3D(v_texturePos, vec2(.1, 0), vec2(1, 0), vec2(1, 1), vec2(.2, 1));
+
+        if (outOf01Range(texPix)) {
+            outColor = vec4(0, 0, 1, 1); //transparent
+        } else {
+            outColor = texture(u_srcTex, verticalFlip(texPix));
+            // outColor = texture(u_srcTex, (texPix));
+            // outColor = vec4(texPix, 0, 1); //transparent
+        }
+        // outColor = getTex(texPix, u_srcTex);
+    } else if (u_mode == 4) {  // transformTexture
+        outColor = vec4(v_texturePos, 0, 1);
+    } else if (u_mode == 7) {  // use transformTexture
+        outColor = vec4(v_texturePos, 0, 1);
     }
-#endif
 }
