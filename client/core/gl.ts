@@ -113,13 +113,22 @@ async function initGl() {
     gl.uniform1i(getUniform("u_vcTex"), 1);
     gl.bindFramebuffer(gl.FRAMEBUFFER, lg.vcFb);
     gl.framebufferTexture2D(gl.FRAMEBUFFER, gl.COLOR_ATTACHMENT0, gl.TEXTURE_2D, lg.vcTex, 0);
-    // gl.bindFramebuffer(gl.FRAMEBUFFER, null);
+    if (gl.checkFramebufferStatus(gl.FRAMEBUFFER) != gl.FRAMEBUFFER_COMPLETE) {
+        console.error("vcTex: this combination of attachments does not work");
+        return;
+    }
+    gl.bindFramebuffer(gl.FRAMEBUFFER, null);
 
     gl.activeTexture(gl.TEXTURE2);
-    gl.bindTexture(gl.TEXTURE_2D, lg.maskTex);
+    gl.bindTexture(gl.TEXTURE_2D, lg.trTex);
     gl.uniform1i(getUniform("u_trTex"), 2);
     gl.bindFramebuffer(gl.FRAMEBUFFER, lg.trFb);
+    gl.viewport(0, 0, frameBufferSize[1], frameBufferSize[0]);
     gl.framebufferTexture2D(gl.FRAMEBUFFER, gl.COLOR_ATTACHMENT0, gl.TEXTURE_2D, lg.trTex, 0);
+    // if (gl.checkFramebufferStatus(gl.FRAMEBUFFER) != gl.FRAMEBUFFER_COMPLETE) {
+    //     console.error("trTex: this combination of attachments does not work");
+    //     return;
+    // }
     // gl.bindFramebuffer(gl.FRAMEBUFFER, null);
 
     gl.bindFramebuffer(gl.FRAMEBUFFER, null);
@@ -172,6 +181,14 @@ function render() {
     resizeCanvasToDisplaySize(gl.canvas, gl);
 
     gl.bindFramebuffer(gl.FRAMEBUFFER, lg.vcFb);
+    gl.viewport(0, 0, frameBufferSize[1], frameBufferSize[0]);
+    gl.bindFramebuffer(gl.FRAMEBUFFER, lg.trFb);
+    gl.viewport(0, 0, frameBufferSize[1], frameBufferSize[0]);
+    gl.bindFramebuffer(gl.FRAMEBUFFER, null);
+    gl.viewport(0, 0, gl.canvas.width, gl.canvas.height);
+
+    gl.bindFramebuffer(gl.FRAMEBUFFER, lg.vcFb);
+    // gl.bindFramebuffer(gl.FRAMEBUFFER, null);
     gl.clear(gl.COLOR_BUFFER_BIT | gl.DEPTH_BUFFER_BIT);
     gl.activeTexture(gl.TEXTURE1);
     gl.bindTexture(gl.TEXTURE_2D, null);
@@ -192,38 +209,34 @@ function render() {
     }
 
     gl.uniform1f(getUniform("u_opacity"), 1);
+    gl.activeTexture(gl.TEXTURE0);
+    gl.bindTexture(gl.TEXTURE_2D, null);
 
     if (transformTextureBaseChanged) {
+        gl.bindFramebuffer(gl.FRAMEBUFFER, lg.trFb);
         gl.activeTexture(gl.TEXTURE2);
         gl.bindTexture(gl.TEXTURE_2D, null);
         gl.activeTexture(gl.TEXTURE1);
-        gl.bindTexture(gl.TEXTURE_2D, lg.vcTex);
+        gl.bindTexture(gl.TEXTURE_2D, null);
         gl.uniformMatrix3fv(getUniform("u_el_transform"), false, m3.empty());
         gl.uniformMatrix3fv(getUniform("u_tex_transform"), false, m3.empty());
-        gl.uniform1i(getUniform("u_mode"), 4);
+        gl.uniformMatrix4x2fv(getUniform("u_cornerPinTr"), false, [
+            0, 0, 1, 0, 1, 1, 0, 1
+        ])
+        gl.uniform1i(getUniform("u_mode"), 3);
         gl.drawArrays(gl.TRIANGLES, 0, 6);
         transformTextureBaseChanged = false;
     }
 
-    gl.activeTexture(gl.TEXTURE2);
-    gl.bindTexture(gl.TEXTURE_2D, null);
-    gl.activeTexture(gl.TEXTURE1);
-    gl.bindTexture(gl.TEXTURE_2D, lg.vcTex);
+    // gl.bindFramebuffer(gl.FRAMEBUFFER, null);
+    // gl.activeTexture(gl.TEXTURE1);
+    // gl.bindTexture(gl.TEXTURE_2D, lg.vcTex);
+    // gl.activeTexture(gl.TEXTURE2);
+    // gl.bindTexture(gl.TEXTURE_2D, lg.trTex);
 
+    // gl.uniform1i(getUniform("u_mode"), 7);
 
-    // gl.activeTexture(gl.TEXTURE0);
-
-
-    gl.uniformMatrix4x2fv(getUniform("u_cornerPinTr"), false, [
-        0, 0, 1, 0, 1, 1, 0, 1
-    ])
-
-    gl.uniformMatrix3fv(getUniform("u_el_transform"), false, m3.rotation(-45));
-    gl.uniformMatrix3fv(getUniform("u_tex_transform"), false, m3.multiply(m3.scaling(.5, .7), m3.rotation(-45)));
-
-    gl.uniform1i(getUniform("u_mode"), 3);
-
-    gl.drawArrays(gl.TRIANGLES, 0, 6);
+    // gl.drawArrays(gl.TRIANGLES, 0, 6);
 
     renderTime.push(performance.now() - startRender);
     fps++;

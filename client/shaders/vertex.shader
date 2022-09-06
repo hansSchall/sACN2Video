@@ -19,7 +19,11 @@ vec2 toTexture(vec2 pos) {
     return ((pos + 1.) / 2.);
 }
 
+vec2 verticalFlip(vec2 pos) {
+    return vec2(pos.x, pos.y * -1. + 1.);
+}
+
 void main() {
     gl_Position = vec4((u_el_transform * vec3(toClipspace(a_corner), 1)).xy, 0, 1);
-    v_texturePos = ((u_tex_transform * vec3(toClipspace(a_corner), 1.)).xy);
+    v_texturePos = (((u_tex_transform * vec3(toClipspace(a_corner), 1.)).xy));
 }

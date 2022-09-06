@@ -188,6 +188,8 @@ function render_old() {
     if (flags.transform) {
         gl.bindFramebuffer(gl.FRAMEBUFFER, lg.vcFb);
         gl.viewport(0, 0, frameBufferSize[1], frameBufferSize[0]);
+        gl.bindFramebuffer(gl.FRAMEBUFFER, lg.trFb);
+        gl.viewport(0, 0, frameBufferSize[1], frameBufferSize[0]);
     } else {
         gl.bindFramebuffer(gl.FRAMEBUFFER, null);
         gl.viewport(0, 0, gl.canvas.width, gl.canvas.height);

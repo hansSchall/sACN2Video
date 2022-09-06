@@ -99,7 +99,8 @@ vec4 getTex(vec2 pos, sampler2D tex) {
 
 void main() {
     if (u_mode == 1) { // 1:1 copy
-        outColor = texture(u_srcTex, v_texturePos);
+        vec2 texPix = toTexture(v_texturePos);
+        outColor = texture(u_srcTex, texPix);
         outColor.a *= u_opacity;
         if (outOf01Range(v_texturePos)) {
             outColor = vec4(0, 0, 0, 0); //transparent
@@ -134,14 +135,18 @@ void main() {
         if (outOf01Range(texPix)) {
             outColor = vec4(0, 0, 1, 1); //transparent
         } else {
-            outColor = texture(u_srcTex, verticalFlip(texPix));
+            // outColor = texture(u_srcTex, verticalFlip(texPix));
             // outColor = texture(u_srcTex, (texPix));
-            // outColor = vec4(texPix, 0, 1); //transparent
+            outColor = vec4(texPix, 0, 1);
         }
         // outColor = getTex(texPix, u_srcTex);
-    } else if (u_mode == 4) {  // transformTexture
+    } else if (u_mode == 4) {  // 1:1 transformTexture
         outColor = vec4(v_texturePos, 0, 1);
     } else if (u_mode == 7) {  // use transformTexture
-        outColor = vec4(v_texturePos, 0, 1);
+
+        vec4 readTrTexData = texture(u_trTex, v_texturePos);
+        outColor = texture(u_vcTex, verticalFlip(readTrTexData.xy));
+        // outColor.a *= readTrTexData.b; // alpha is stored in blue channel
+        outColor = readTrTexData;
     }
 }
