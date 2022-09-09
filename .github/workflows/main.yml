@@ -19,9 +19,8 @@ jobs:
         node-version: 16
     - name: yarn install typescript
       run: yarn global add typescript
-    - name: server dir
-      run: cd server
     - name: yarn install
       run: yarn install
+      working-directory: server
     - name: tsc
       run: tsc --noEmit --noErrorTruncation --pretty false --incremental false --project server
