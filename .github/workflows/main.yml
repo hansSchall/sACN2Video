@@ -17,11 +17,11 @@ jobs:
       uses: actions/setup-node@v1
       with:
         node-version: 16
+    - name: yarn install typescript
+      run: yarn global add typescript
     - name: server dir
       run: cd server
     - name: yarn install
       run: yarn install
     - name: tsc
-      uses: icrawl/action-tsc@v1
-      with:
-        project: server
+      run: tsc --noEmit --noErrorTruncation --pretty false --incremental false --project server
