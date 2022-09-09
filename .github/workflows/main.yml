@@ -30,7 +30,7 @@ jobs:
       working-directory: runInNativeWin
     - name: tsc
       run: tsc --noEmit --noErrorTruncation --pretty false --incremental false
-      working-directory: runInNativWin
+      working-directory: runInNativeWin
     - name: yarn install
       run: yarn install
       working-directory: editor/frontend
