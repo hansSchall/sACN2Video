@@ -42,6 +42,14 @@ function connectWS() {
     })
 }
 
+function addSacnListener(addr: number, listener: (this: Elmnt, value: number) => void) {
+    if (sacnListener.has(addr)) {
+        sacnListener.get(addr)?.add(listener);
+    } else {
+        sacnListener.set(addr, new Set([listener]));
+    }
+}
+
 function parseValue(value: string) {
     const valuePart = parseInt(value.substring(0, 2), 16);
     const addrPart = parseInt(value.substring(2), 36);
