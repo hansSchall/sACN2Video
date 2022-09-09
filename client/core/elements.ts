@@ -65,9 +65,13 @@ async function loadElmntsV2() {
         if (typeof el[1] != "string") {
             throw new Error(`gl.ts loadElmnts(): config[...][1] is not a string`);
         }
-        const props: Prop[] = splitcomma(el[2]).map(_ => splitcomma(_)) as any[];
-        console.log(props)
-        if (props.findIndex(_ => _.length != 3 && _.length != 6) != -1)
+        const props_: (Prop | [string])[] = splitcomma(el[2]).map(_ => splitcomma(_)) as any[];
+        console.log(props_);
+        if (props_.length === 1 && props_[0].length === 1 && props_[0][0] === "") {
+            continue;
+        }
+        const props = props_ as Prop[];
+        if (props.findIndex(_ => _.length != 3 && _.length != 6 && _ !== undefined) != -1)
             throw new Error("gl.ts loadElmnts(): property descriptor has no matching length");
         switch (el[1] as string) {
             case "img":
