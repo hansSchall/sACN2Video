@@ -21,6 +21,7 @@ jobs:
       run: yarn global add typescript
     - name: yarn install
       run: yarn install
-      working-directory: server
+      working-directory: client
     - name: tsc
-      run: tsc --noEmit --noErrorTruncation --pretty false --incremental false --project server
+      run: tsc --noEmit --noErrorTruncation --pretty false --incremental false
+      working-directory: client
