@@ -111,6 +111,26 @@ function Pos2Buffer({ x, y, h, w }: Pos) {
     return new Float32Array([x, y, x + w, y, x + w, y + h, x, y, x, y + h, x + w, y + h]);
 }
 
+function mergeTransformMatrices([aa, ab]: [(number[] | null), (number[] | null)], [ba, bb]: [(number[] | null), (number[] | null)]): [number[], number[]] {
+    return [mergeTransformMatrix(aa, ba), mergeTransformMatrix(ab, bb)];
+}
+
+function mergeTransformMatrix(a: number[] | null, b: number[] | null): number[] {
+    if (a) {
+        if (b) {
+            return m3.multiply2(a, b);
+        } else {
+            return a;
+        }
+    } else {
+        if (b) {
+            return b;
+        } else {
+            return m3.empty();
+        }
+    }
+}
+
 // from https://webglfundamentals.org/
 // (adapted)
 // License:
@@ -144,25 +164,39 @@ function Pos2Buffer({ x, y, h, w }: Pos) {
 // # OF THIS SOFTWARE, EVEN IF ADVISED OF THE POSSIBILITY OF SUCH DAMAGE.
 
 var m3 = {
-    multiply(a: number[], b: number[]) {
-        var a00 = a[0 * 3 + 0];
-        var a01 = a[0 * 3 + 1];
-        var a02 = a[0 * 3 + 2];
-        var a10 = a[1 * 3 + 0];
-        var a11 = a[1 * 3 + 1];
-        var a12 = a[1 * 3 + 2];
-        var a20 = a[2 * 3 + 0];
-        var a21 = a[2 * 3 + 1];
-        var a22 = a[2 * 3 + 2];
-        var b00 = b[0 * 3 + 0];
-        var b01 = b[0 * 3 + 1];
-        var b02 = b[0 * 3 + 2];
-        var b10 = b[1 * 3 + 0];
-        var b11 = b[1 * 3 + 1];
-        var b12 = b[1 * 3 + 2];
-        var b20 = b[2 * 3 + 0];
-        var b21 = b[2 * 3 + 1];
-        var b22 = b[2 * 3 + 2];
+    multiply(...mats_: (number[] | null)[]): number[] {
+        const mats: number[][] = mats_.filter(_ => _ !== null) as any;
+        if (mats.length === 0) {
+            return m3.empty();
+        } else if (mats.length === 1) {
+            return mats[0];
+        } else if (mats.length === 2) {
+            const [a, b] = mats;
+            return m3.multiply2(a, b);
+        } else {
+            const [a, b, ...more] = mats;
+            return m3.multiply(m3.multiply2(a, b), ...more);
+        }
+    },
+    multiply2(a: number[], b: number[]) {
+        const a00 = a[0 * 3 + 0];
+        const a01 = a[0 * 3 + 1];
+        const a02 = a[0 * 3 + 2];
+        const a10 = a[1 * 3 + 0];
+        const a11 = a[1 * 3 + 1];
+        const a12 = a[1 * 3 + 2];
+        const a20 = a[2 * 3 + 0];
+        const a21 = a[2 * 3 + 1];
+        const a22 = a[2 * 3 + 2];
+        const b00 = b[0 * 3 + 0];
+        const b01 = b[0 * 3 + 1];
+        const b02 = b[0 * 3 + 2];
+        const b10 = b[1 * 3 + 0];
+        const b11 = b[1 * 3 + 1];
+        const b12 = b[1 * 3 + 2];
+        const b20 = b[2 * 3 + 0];
+        const b21 = b[2 * 3 + 1];
+        const b22 = b[2 * 3 + 2];
 
         return [
             b00 * a00 + b01 * a10 + b02 * a20,
