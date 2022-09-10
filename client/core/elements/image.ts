@@ -24,6 +24,7 @@ class ImgElmnt extends Elmnt {
     }
 
     getTransformMatrices(): [number[] | null, number[] | null] {
+        return [null, null];
         return [m3.rotation(this.elementRotation), m3.rotation(-this.textureRotation)];
     }
 }

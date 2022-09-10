@@ -187,7 +187,7 @@ function render() {
     for (let el of elmnts) {
         const op = el.getOpacity();
         if (op == 0) continue;
-        const [elTransform, texTransform] = el.getTransformMatrices();
+        const [elTransform, texTransform] = mergeTransformMatrices(el.getTransformMatrices(), el.getTransformMatricesMultiplier());
         gl.uniformMatrix3fv(getUniform("u_el_transform"), false, elTransform || m3.empty())
         gl.uniformMatrix3fv(getUniform("u_tex_transform"), false, texTransform || m3.empty())
         gl.uniform1f(getUniform("u_opacity"), op);

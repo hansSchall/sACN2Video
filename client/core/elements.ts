@@ -127,7 +127,17 @@ abstract class Elmnt {
     }
     pos: Pos = { x: 0, y: 0, h: 1, w: 1 };
 
-    abstract getTransformMatrices(): [number[] | null, number[] | null];
+    getTransformMatrices(): [number[] | null, number[] | null] {
+        return [null, null];
+    }
+
+    getTransformMatricesMultiplier(): [number[] | null, number[] | null] {
+        // return [
+        //     m3.multiply(/* m3.rotation(this.elementRotation),  */m3.scaling(this.pos.w, this.pos.h)/* , m3.translation(this.pos.x, this.pos.y) */),
+        //     m3.rotation(this.textureRotation),
+        // ]
+        return [m3.rotation(this.elementRotation), m3.rotation(-this.textureRotation)];
+    }
 
     elementRotation: number = 0;
     textureRotation: number = 0;
@@ -154,11 +164,11 @@ abstract class Elmnt {
                 break;
             case "re":
                 this.elementRotation = parseFloat(value as string);
-                this.getTransformMatrices();
+                // this.getTransformMatrices();
                 break;
             case "rt":
                 this.textureRotation = parseFloat(value as string);
-                this.getTransformMatrices();
+                // this.getTransformMatrices();
                 break;
         }
     }
