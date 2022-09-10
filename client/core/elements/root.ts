@@ -11,7 +11,7 @@ function rootElement(props: any[]) {
             } else if (par == "mask") {
                 textureLoadIndicator(false);
                 const img = new Image();
-                img.src = assets.get(value.toString()) ?? "";
+                img.src = getAsset(value.toString()) ?? "";
                 useMask = true;
                 img.addEventListener("load", () => {
                     const gl = getGLcontext();

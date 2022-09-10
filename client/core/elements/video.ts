@@ -10,7 +10,7 @@ class VideoElmnt extends Elmnt {
             console.log(`%c [${timeSinceAppStart()}] mounted ${id}`, "color: #0f0");
             textureLoadIndicator(true);
         });
-        this.video.src = assets.get(props.find(_ => _[0] == "src")?.[2] ?? "") ?? "";
+        this.video.src = getAsset(props.find(_ => _[0] == "src")?.[2] ?? "") ?? "";
         this.playback = new Playback(this.video, parseInt((props.find(_ => _[0] == "sync") ?? [])[2] ?? ""));
         textureLoadIndicator(false);
         props.forEach(this.initPar.bind(this));

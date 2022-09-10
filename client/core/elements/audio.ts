@@ -8,7 +8,7 @@ class AudioElmnt extends Elmnt {
             console.log(`%c [${timeSinceAppStart()}] mounted ${id}`, "color: #0f0");
             textureLoadIndicator(true);
         });
-        this.audio.src = assets.get(props.find(_ => _[0] == "src")?.[2] ?? "") ?? "";
+        this.audio.src = getAsset(props.find(_ => _[0] == "src")?.[2] ?? "") ?? "";
         this.playback = new Playback(this.audio, parseInt(props.find(_ => _[0] == "sync")?.[2] ?? ""));
         textureLoadIndicator(false);
         props.forEach(this.initPar.bind(this));

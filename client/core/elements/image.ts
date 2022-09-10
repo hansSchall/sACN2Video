@@ -4,7 +4,7 @@ class ImgElmnt extends Elmnt {
         const gl = getGLcontext();
         gl.bufferData(gl.ARRAY_BUFFER, new Float32Array([0, 0, 1, 0, 1, 1, 0, 0, 0, 1, 1, 1]), gl.STATIC_DRAW);
         const img = new Image();
-        img.src = assets.get(props.find(_ => _[0] == "src")?.[2] ?? "") ?? "";
+        img.src = getAsset(props.find(_ => _[0] == "src")?.[2] ?? "") ?? "";
         textureLoadIndicator(false);
         img.addEventListener('load', () => {
             if (!gl) {
