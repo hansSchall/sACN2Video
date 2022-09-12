@@ -1,5 +1,6 @@
 import { Assets } from "./assets.js";
 import { PropsEditor } from "./props.editor.js";
+import { SQLEditor } from "./sqleditor/sqleditor.js";
 
 window.addEventListener("load", () => {
     // @ts-ignore
@@ -9,7 +10,7 @@ window.addEventListener("load", () => {
 })
 
 function App() {
-    const [rootView, setRootView] = React.useState("assets")
+    const [rootView, setRootView] = React.useState("sql")
     const [splitscreen, setSplitscreen] = React.useState(false)
     const [previewUrl, setPreviewUrl] = React.useState("");
     React.useEffect(() => {
@@ -19,6 +20,18 @@ function App() {
     function reloadPreview() {
         setPreviewUrl("");
         preload.getPreviewUrl().then(setPreviewUrl);
+    }
+    let view: JSX.Element = <div>view not found</div>;
+    switch (rootView) {
+        case "props":
+            view = <PropsEditor />;
+            break;
+        case "assets":
+            view = <Assets />;
+            break;
+        case "sql":
+            view = <SQLEditor />;
+            break;
     }
     return <>
         <aside>
@@ -31,6 +44,9 @@ function App() {
             <div className={rootView == "props" ? "active" : ""} onClick={() => setRootView("props")}>
                 <i className="bi-clipboard"></i>
             </div>
+            <div className={rootView == "sql" ? "active" : ""} onClick={() => setRootView("sql")}>
+                <i className="bi-file-earmark-binary"></i>
+            </div>
             <div onClick={reloadPreview}>
                 <i className="bi-arrow-clockwise"></i>
             </div>
@@ -39,7 +55,7 @@ function App() {
             </div>
         </aside>
         <article>
-            {rootView == "props" ? <PropsEditor /> : <Assets />}
+            {view}
         </article>
         {splitscreen ?
             <article id="preview">

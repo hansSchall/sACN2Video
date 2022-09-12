@@ -30,6 +30,7 @@ declare const preload: {
     },
     getPreviewUrl: () => Promise<string>,
     getPreviewMode: () => Promise<boolean>,
+    runSQL(sql: string): Promise<any>,
     assets: {
         list: () => Promise<string[]>,
         fileDialog: () => Promise<string>,
