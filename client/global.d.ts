@@ -29,4 +29,5 @@ declare const flags: {
     overlayVerbose: number,
     reportServer: string | null | undefined,
     reportTarget: string | null | undefined,
+    debug: string | "disabled",
 }

@@ -56,6 +56,18 @@ on sACN at your console and patch the channels exactly as you have defined them 
 configuration editor. This is the same as connecting a DMX device - except that you
 don't need XLR cables ;-) . More details on patching can be found [here](/misc/fixture_definition.md).
 
+### How to run the app as a .exe?
+
+1. Go to https://github.com/electron/electron/releases/latest
+2. Download `electron-vx.x.x-win32-x64.zip`
+3. Unzip it.
+4. Delete everything from the `ressources` folder and create a folder named `app` in it.
+5. create a file `package.json` in `ressources/app` with the following content: `{ "main": "index.js" }`
+6. create a file `index.js` in `ressources/app` with the following content: `require("<absolute-path-to-the-cloned-github-repository>/runInNativeWin/run.js");`
+7. now `electron.exe` will start the app. If you want, you can rename it and create a desktop shortcut.
+
+For other operating systems and architectures (32bit) this works very simmilar.
+
 ### Error: Cannot find module '...\sACN2Video\server\node_modules\sacn\dist'. Please verify that the package.json has a valid "main" entry
 
 If this message shows up when trying to start the server, run `npm run build` in `server/node_modules/sacn`

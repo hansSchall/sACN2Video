@@ -11,10 +11,11 @@
             
             const flags = {
                 transform: true,
-                clockPrescaler: parseInt(href.searchParams.get("clock")) || 2,
-                overlayVerbose: parseInt(href.searchParams.get("verbose")) || 0,
-                reportServer: href.searchParams.get("report"),
-                reportTarget: href.searchParams.get("target"),
+                clockPrescaler: parseInt(href.searchParams.get("clock") || sessionStorage.getItem("clock")) || 2,
+                overlayVerbose: parseInt(href.searchParams.get("verbose") || sessionStorage.getItem("verbose")) || 0,
+                reportServer: href.searchParams.get("report") || sessionStorage.getItem("report"),
+                reportTarget: href.searchParams.get("target") || sessionStorage.getItem("target"),
+                debug: href.searchParams.get("debug") || sessionStorage.getItem("debug") || "disabled",
             }
         </script>
         <style>
@@ -81,7 +82,7 @@
         <canvas id="c"></canvas>
         <div id="info">
             <div id="fps">0fps</div>
-            <div id="status-el"></div>
+            <div id="status-el">starting</div>
         </div>
         <div id="load-info">
             <div id="files" class="hidden">

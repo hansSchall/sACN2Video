@@ -65,9 +65,13 @@ async function loadElmntsV2() {
         if (typeof el[1] != "string") {
             throw new Error(`gl.ts loadElmnts(): config[...][1] is not a string`);
         }
-        const props: Prop[] = splitcomma(el[2]).map(_ => splitcomma(_)) as any[];
-        console.log(props)
-        if (props.findIndex(_ => _.length != 3 && _.length != 6) != -1)
+        const props_: (Prop | [string])[] = splitcomma(el[2]).map(_ => splitcomma(_)) as any[];
+        console.log(props_);
+        if (props_.length === 1 && props_[0].length === 1 && props_[0][0] === "") {
+            continue;
+        }
+        const props = props_ as Prop[];
+        if (props.findIndex(_ => _.length != 3 && _.length != 6 && _ !== undefined) != -1)
             throw new Error("gl.ts loadElmnts(): property descriptor has no matching length");
         switch (el[1] as string) {
             case "img":
@@ -122,7 +126,17 @@ abstract class Elmnt {
     }
     pos: Pos = { x: 0, y: 0, h: 1, w: 1 };
 
-    abstract getTransformMatrices(): [number[] | null, number[] | null];
+    getTransformMatrices(): [number[] | null, number[] | null] {
+        return [null, null];
+    }
+
+    getTransformMatricesMultiplier(): [number[] | null, number[] | null] {
+        // return [
+        //     m3.multiply(/* m3.rotation(this.elementRotation),  */m3.scaling(this.pos.w, this.pos.h)/* , m3.translation(this.pos.x, this.pos.y) */),
+        //     m3.rotation(this.textureRotation),
+        // ]
+        return [m3.rotation(this.elementRotation), m3.rotation(-this.textureRotation)];
+    }
 
     elementRotation: number = 0;
     textureRotation: number = 0;
@@ -149,11 +163,11 @@ abstract class Elmnt {
                 break;
             case "re":
                 this.elementRotation = parseFloat(value as string);
-                this.getTransformMatrices();
+                // this.getTransformMatrices();
                 break;
             case "rt":
                 this.textureRotation = parseFloat(value as string);
-                this.getTransformMatrices();
+                // this.getTransformMatrices();
                 break;
         }
     }

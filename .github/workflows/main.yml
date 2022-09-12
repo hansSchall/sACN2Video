@@ -1,0 +1,39 @@
+name: TSC
+
+on:
+  push:
+    branches: [ "main" ]
+  pull_request:
+    branches: [ "main" ]
+  workflow_dispatch:
+
+jobs:
+  tsc:
+    name: tsc
+    runs-on: ubuntu-latest
+    steps:
+    - uses: actions/checkout@v1
+    - name: install node v16
+      uses: actions/setup-node@v1
+      with:
+        node-version: 16
+    - name: yarn install typescript
+      run: yarn global add typescript
+    - name: yarn install
+      run: yarn install
+      working-directory: client
+    - name: tsc
+      run: tsc --noEmit --noErrorTruncation --pretty false --incremental false
+      working-directory: client
+    - name: yarn install
+      run: yarn install
+      working-directory: runInNativeWin
+    - name: tsc
+      run: tsc --noEmit --noErrorTruncation --pretty false --incremental false
+      working-directory: runInNativeWin
+    - name: yarn install
+      run: yarn install
+      working-directory: editor/frontend
+    - name: tsc
+      run: tsc --noEmit --noErrorTruncation --pretty false --incremental false
+      working-directory: editor/frontend

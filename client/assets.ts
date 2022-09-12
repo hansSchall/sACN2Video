@@ -81,6 +81,18 @@ interface FileReq {
     mime: string
 }
 const assets = new Map<string, string>();
+
+function getAsset(id: string) {
+    const asset = assets.get(id);
+    if (!asset) {
+        log(["assets", "get-asset", `asset ${id} not found`], "Error");
+        if (flags.debug !== "disabled") {
+
+        }
+    }
+    return asset;
+}
+
 function initAssets() {
     const reqs: FileReq[] = ["vertex", "fragment"].map(_ => ({
         url: `/client/shaders/${_}.shader`,
