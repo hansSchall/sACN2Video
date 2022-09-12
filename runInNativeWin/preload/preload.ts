@@ -56,6 +56,9 @@ contextBridge.exposeInMainWorld("preload", {
     getPreviewMode() {
         return ipcRenderer.invoke("get-preview-mode");
     },
+    runSQL(sql: string): Promise<any> {
+        return ipcRenderer.invoke("run-sql", sql);
+    },
     assets: {
         list(): Promise<string[]> {
             return ipcRenderer.invoke("list-assets");

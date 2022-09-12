@@ -98,7 +98,6 @@ async function loadElmntsV2() {
     clear();
 }
 
-
 type Prop = [string, string, string] | [string, string, string, string, string, number | string];
 
 const elmnts = new Set<Elmnt>();
@@ -196,7 +195,6 @@ abstract class Elmnt {
                 throw new Error("valueMapping.version not supported")
         }
 
-        console.log(valueMapping);
 
         if (type.startsWith("static")) {
             if (type == "staticcp") {

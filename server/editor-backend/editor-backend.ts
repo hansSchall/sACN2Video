@@ -116,6 +116,10 @@ export function initEditor(db: Database) {
         }
     })
 
+    electron.ipcMain.handle("run-sql", async (ev, sql: string) => {
+        return await db.all(sql);
+    })
+
     electron.ipcMain.on("logger", (ev) => {
         const port = ev.ports[0]
         logger.on("data", (data) => {
