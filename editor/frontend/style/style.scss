@@ -1,4 +1,4 @@
-$c: #fe5000;
+$c: #02B514;
 
 @mixin center {
     display: flex;
@@ -19,6 +19,7 @@ main {
     width: 100vw;
     color-scheme: dark;
     overflow: hidden;
+    color: $c  !important;
 
     article {
         flex: 1 1 1px;
