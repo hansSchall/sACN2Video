@@ -11,6 +11,12 @@ import expressWs from "express-ws";
 import { clientConfig, clientConfigV2 } from "./src/clientConfig.js";
 import { initOSC } from "./src/osc";
 import { joincomma } from "./src/utils";
+import { api_v3_app_http } from "./src/api/v3.app.http";
+import { api_v3_ext_http } from "./src/api/v3.ext.http";
+import { v4 } from "uuid";
+import fileUpload from "express-fileupload";
+
+const apiToken = v4();
 
 export async function start(dbFilePath: string, port: number) {
     if (!(await fs.pathExists(dbFilePath))) {
@@ -27,6 +33,8 @@ export async function start(dbFilePath: string, port: number) {
 
     app.set('etag', 'strong')
 
+    app.use(fileUpload());
+
     app.use("/client", express.static(path.join(__dirname, "../client"), { index: "client.html" }));
 
     app.get("/", (req, res) => {
@@ -42,11 +50,21 @@ export async function start(dbFilePath: string, port: number) {
         initOSC(),
     ])
 
+
+    app.use("/api/v3/app", api_v3_app_http);
+
+    app.use("/api/v3/ext", api_v3_ext_http);
+
     registerExpressListener(app);
 
     if (port > 0) {
         app.listen(port, () => {
-            console.log(`Listening on port ${port}`)
+            console.log(`Listening on port ${port}`);
+            parentPort.postMessage({
+                type: "port",
+                port,
+            });
+            parentPort.postMessage
         });
     } else {
         const server = app.listen(() => {

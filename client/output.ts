@@ -7,6 +7,7 @@ function init() {
     log(["client", "init", "flags", `#define TRANSFORM ${flags.transform ? "ENABLED" : "DISABLED"}`], "Info");
     log(["client", "init", "flags", `#define CLOCK_PRESCALER ${flags.clockPrescaler}`], "Info");
     log(["client", "init", "flags", `#define OVERLAY_VERBOSE ${flags.overlayVerbose}`], "Info");
+    initReloadPing();
     initAssets();
     initSocket();
     initGl().catch(globalErrorHandler);
@@ -19,10 +20,11 @@ function init() {
                 const [serverURL, serverTarget] = splitcomma(cont);
                 const reportURL = flags.reportServer ? new URL(flags.reportServer) : new URL(serverURL);
                 const reportTarget = flags.reportTarget || serverTarget;
-                logserver.start(reportURL, reportTarget);
+                // logserver.start(reportURL, reportTarget);
             })
         }
     })
+
 }
 function hideInfos() {
     switch (flags.overlayVerbose) {
