@@ -4,8 +4,11 @@ import { join } from "path";
 import { v4 as uuid4 } from "uuid";
 import { db } from "../db";
 import { reloadApp } from "./v3.app.http";
+import cors from "cors";
 
 export const app = Router();
+
+app.use(cors());
 
 app.get("/run-sql", (req, res) => {
     const sql = req.query?.sql;
